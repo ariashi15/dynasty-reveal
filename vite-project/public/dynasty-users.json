@@ -1,0 +1,370 @@
+{
+  "users": {
+    "sora": {
+      "email": "sora@example.com",
+      "name": "Sora",
+      "dynasty": "wind",
+      "littles": ["lyra", "kellan"]
+    },
+    "lyra": {
+      "email": "lyra@example.com",
+      "name": "Lyra",
+      "dynasty": "wind",
+      "littles": ["niko", "uma"]
+    },
+    "kellan": {
+      "email": "kellan@example.com",
+      "name": "Kellan",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "niko": {
+      "email": "niko@example.com",
+      "name": "Niko",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "uma": {
+      "email": "uma@example.com",
+      "name": "Uma",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "ember": {
+      "email": "ember@example.com",
+      "name": "Ember",
+      "dynasty": "fire",
+      "littles": ["blaze", "cinder"]
+    },
+    "blaze": {
+      "email": "blaze@example.com",
+      "name": "Blaze",
+      "dynasty": "fire",
+      "littles": ["flare"]
+    },
+    "cinder": {
+      "email": "cinder@example.com",
+      "name": "Cinder",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "flare": {
+      "email": "flare@example.com",
+      "name": "Flare",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "pyra": {
+      "email": "pyra@example.com",
+      "name": "Pyra",
+      "dynasty": "fire",
+      "littles": ["ash", "torch"]
+    },
+    "ash": {
+      "email": "ash@example.com",
+      "name": "Ash",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "torch": {
+      "email": "torch@example.com",
+      "name": "Torch",
+      "dynasty": "fire",
+      "littles": ["spark"]
+    },
+    "spark": {
+      "email": "spark@example.com",
+      "name": "Spark",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "vulcan": {
+      "email": "vulcan@example.com",
+      "name": "Vulcan",
+      "dynasty": "fire",
+      "littles": ["emberfall", "singe"]
+    },
+    "emberfall": {
+      "email": "emberfall@example.com",
+      "name": "Emberfall",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "singe": {
+      "email": "singe@example.com",
+      "name": "Singe",
+      "dynasty": "fire",
+      "littles": ["flint"]
+    },
+    "flint": {
+      "email": "flint@example.com",
+      "name": "Flint",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "cindercrest": {
+      "email": "cindercrest@example.com",
+      "name": "Cindercrest",
+      "dynasty": "fire",
+      "littles": ["kindle", "smolder"]
+    },
+    "kindle": {
+      "email": "kindle@example.com",
+      "name": "Kindle",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "smolder": {
+      "email": "smolder@example.com",
+      "name": "Smolder",
+      "dynasty": "fire",
+      "littles": []
+    },
+    "marin": {
+      "email": "marin@example.com",
+      "name": "Marin",
+      "dynasty": "water",
+      "littles": ["brook", "mist"]
+    },
+    "brook": {
+      "email": "brook@example.com",
+      "name": "Brook",
+      "dynasty": "water",
+      "littles": []
+    },
+    "mist": {
+      "email": "mist@example.com",
+      "name": "Mist",
+      "dynasty": "water",
+      "littles": ["reef"]
+    },
+    "reef": {
+      "email": "reef@example.com",
+      "name": "Reef",
+      "dynasty": "water",
+      "littles": []
+    },
+    "lagoon": {
+      "email": "lagoon@example.com",
+      "name": "Lagoon",
+      "dynasty": "water",
+      "littles": ["current", "delta"]
+    },
+    "current": {
+      "email": "current@example.com",
+      "name": "Current",
+      "dynasty": "water",
+      "littles": []
+    },
+    "delta": {
+      "email": "delta@example.com",
+      "name": "Delta",
+      "dynasty": "water",
+      "littles": ["foam"]
+    },
+    "foam": {
+      "email": "foam@example.com",
+      "name": "Foam",
+      "dynasty": "water",
+      "littles": []
+    },
+    "tide": {
+      "email": "tide@example.com",
+      "name": "Tide",
+      "dynasty": "water",
+      "littles": ["wave", "spray"]
+    },
+    "wave": {
+      "email": "wave@example.com",
+      "name": "Wave",
+      "dynasty": "water",
+      "littles": []
+    },
+    "spray": {
+      "email": "spray@example.com",
+      "name": "Spray",
+      "dynasty": "water",
+      "littles": ["brine"]
+    },
+    "brine": {
+      "email": "brine@example.com",
+      "name": "Brine",
+      "dynasty": "water",
+      "littles": []
+    },
+    "reefline": {
+      "email": "reefline@example.com",
+      "name": "Reefline",
+      "dynasty": "water",
+      "littles": ["drift", "mistfall"]
+    },
+    "drift": {
+      "email": "drift@example.com",
+      "name": "Drift",
+      "dynasty": "water",
+      "littles": []
+    },
+    "mistfall": {
+      "email": "mistfall@example.com",
+      "name": "Mistfall",
+      "dynasty": "water",
+      "littles": []
+    },
+    "terra": {
+      "email": "terra@example.com",
+      "name": "Terra",
+      "dynasty": "earth",
+      "littles": ["grove", "onyx"]
+    },
+    "grove": {
+      "email": "grove@example.com",
+      "name": "Grove",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "onyx": {
+      "email": "onyx@example.com",
+      "name": "Onyx",
+      "dynasty": "earth",
+      "littles": ["basil"]
+    },
+    "basil": {
+      "email": "basil@example.com",
+      "name": "Basil",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "quarry": {
+      "email": "quarry@example.com",
+      "name": "Quarry",
+      "dynasty": "earth",
+      "littles": ["clay", "shale"]
+    },
+    "clay": {
+      "email": "clay@example.com",
+      "name": "Clay",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "shale": {
+      "email": "shale@example.com",
+      "name": "Shale",
+      "dynasty": "earth",
+      "littles": ["pebble"]
+    },
+    "pebble": {
+      "email": "pebble@example.com",
+      "name": "Pebble",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "stone": {
+      "email": "stone@example.com",
+      "name": "Stone",
+      "dynasty": "earth",
+      "littles": ["moss", "silt"]
+    },
+    "moss": {
+      "email": "moss@example.com",
+      "name": "Moss",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "silt": {
+      "email": "silt@example.com",
+      "name": "Silt",
+      "dynasty": "earth",
+      "littles": ["cliff"]
+    },
+    "cliff": {
+      "email": "cliff@example.com",
+      "name": "Cliff",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "vale": {
+      "email": "vale@example.com",
+      "name": "Vale",
+      "dynasty": "earth",
+      "littles": ["root", "loam"]
+    },
+    "root": {
+      "email": "root@example.com",
+      "name": "Root",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "loam": {
+      "email": "loam@example.com",
+      "name": "Loam",
+      "dynasty": "earth",
+      "littles": []
+    },
+    "zephyr": {
+      "email": "zephyr@example.com",
+      "name": "Zephyr",
+      "dynasty": "wind",
+      "littles": ["gust", "draft"]
+    },
+    "gust": {
+      "email": "gust@example.com",
+      "name": "Gust",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "draft": {
+      "email": "draft@example.com",
+      "name": "Draft",
+      "dynasty": "wind",
+      "littles": ["whirl"]
+    },
+    "whirl": {
+      "email": "whirl@example.com",
+      "name": "Whirl",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "aero": {
+      "email": "aero@example.com",
+      "name": "Aero",
+      "dynasty": "wind",
+      "littles": ["breeze", "gustline"]
+    },
+    "breeze": {
+      "email": "breeze@example.com",
+      "name": "Breeze",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "gustline": {
+      "email": "gustline@example.com",
+      "name": "Gustline",
+      "dynasty": "wind",
+      "littles": ["ripple"]
+    },
+    "ripple": {
+      "email": "ripple@example.com",
+      "name": "Ripple",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "cloud": {
+      "email": "cloud@example.com",
+      "name": "Cloud",
+      "dynasty": "wind",
+      "littles": ["draftlet", "zephyra"]
+    },
+    "draftlet": {
+      "email": "draftlet@example.com",
+      "name": "Draftlet",
+      "dynasty": "wind",
+      "littles": []
+    },
+    "zephyra": {
+      "email": "zephyra@example.com",
+      "name": "Zephyra",
+      "dynasty": "wind",
+      "littles": []
+    }
+  }
+}
