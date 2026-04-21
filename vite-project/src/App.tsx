@@ -294,7 +294,7 @@ function FamilyTreeCanvas({
   return (
     <section className="tree-shell">
       <header className="tree-header">
-        <h2>{DYNASTY_STYLE[dynasty].label} Dynasty Family Tree</h2>
+        <h2>{DYNASTY_STYLE[dynasty].label} Dynasty Family Trees</h2>
         <div className="tree-controls">
           <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
             -
@@ -387,6 +387,7 @@ function App() {
   const [activeUserId, setActiveUserId] = useState('')
   const [activeDynasty, setActiveDynasty] = useState<Dynasty>('fire')
   const [showReveal, setShowReveal] = useState(false)
+  const [revealClosing, setRevealClosing] = useState(false)
   const [revealDone, setRevealDone] = useState(false)
   const [showCloseButton, setShowCloseButton] = useState(false)
   const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name'>('loading')
@@ -394,6 +395,7 @@ function App() {
   const [searchFocus, setSearchFocus] = useState(false)
   const [searchedUserId, setSearchedUserId] = useState('')
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
+  const closeRevealTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     let ignore = false
@@ -433,6 +435,7 @@ function App() {
       return
     }
 
+    setRevealClosing(false)
     setRevealDone(false)
     setShowCloseButton(false)
     setRevealPhase('loading')
@@ -460,6 +463,14 @@ function App() {
       window.clearTimeout(doneTimer)
     }
   }, [showReveal])
+
+  useEffect(() => {
+    return () => {
+      if (closeRevealTimerRef.current !== null) {
+        window.clearTimeout(closeRevealTimerRef.current)
+      }
+    }
+  }, [])
 
   const activeUser = activeUserId ? usersById[activeUserId] : undefined
   const activeTheme = DYNASTY_STYLE[activeDynasty]
@@ -553,7 +564,12 @@ function App() {
   }, [searchedUserId])
 
   const returnToLogin = () => {
+    if (closeRevealTimerRef.current !== null) {
+      window.clearTimeout(closeRevealTimerRef.current)
+      closeRevealTimerRef.current = null
+    }
     setActiveUserId('')
+    setRevealClosing(false)
     setShowReveal(false)
     setRevealDone(false)
     setShowCloseButton(false)
@@ -574,7 +590,7 @@ function App() {
     const found = Object.entries(usersById).find(([, user]) => normalizeEmail(user.email) === normalized)
 
     if (!found) {
-      setFormError('That email is not in the current assignment JSON yet.')
+      setFormError("We can't find you in our database! Email csa@u.northwestern.edu if this is a mistake.")
       return
     }
 
@@ -582,6 +598,19 @@ function App() {
     setActiveUserId(found[0])
     setActiveDynasty(found[1].dynasty)
     setShowReveal(true)
+  }
+
+  const closeReveal = () => {
+    if (revealClosing) {
+      return
+    }
+
+    setRevealClosing(true)
+    closeRevealTimerRef.current = window.setTimeout(() => {
+      setShowReveal(false)
+      setRevealClosing(false)
+      closeRevealTimerRef.current = null
+    }, 430)
   }
 
   if (!activeUser) {
@@ -619,7 +648,7 @@ function App() {
     <main className="app-shell" style={dynastyThemeVars}>
       <header className="app-topbar">
         <div className="topbar-title-row">
-          <h1>CSA Family Trees</h1>
+          <h1>Northwestern CSA Family Trees</h1>
           <div className="topbar-actions">
             <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
               <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
@@ -691,7 +720,7 @@ function App() {
       />
 
       {showReveal && (
-        <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''}`}>
+        <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''} ${revealClosing ? 'is-closing' : ''}`}>
           <div className="reveal-rings" aria-hidden="true">
             <span />
             <span />
@@ -704,7 +733,7 @@ function App() {
           </div>
           <div className={`reveal-copy phase-${revealPhase}`}>
             <div className={`reveal-intro ${revealPhase !== 'loading' ? 'is-visible' : ''}`}>
-              <p>{activeUser.name}, you belong to</p>
+              <p>{activeUser.name}, you're in...</p>
             </div>
             {revealPhase === 'loading' ? (
               <div className="loading-orb" aria-hidden="true" />
@@ -717,8 +746,8 @@ function App() {
             )}
             <div className="reveal-actions">
               {showCloseButton ? (
-                <button type="button" className={`reveal-close-btn ${revealDone ? 'is-visible' : ''}`} onClick={() => setShowReveal(false)}>
-                  Close Reveal
+                <button type="button" className={`reveal-close-btn ${revealDone ? 'is-visible' : ''}`} onClick={closeReveal}>
+                  Close
                 </button>
               ) : (
                 <span aria-hidden="true" />

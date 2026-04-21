@@ -89,6 +89,7 @@
   margin-top: 0.85rem;
   color: #9f3122;
   font-weight: 700;
+  font-size: 0.75rem;
 }
 
 .examples {
@@ -122,7 +123,7 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .app-topbar h1 {
@@ -452,6 +453,7 @@
 
 .tree-node h3 {
   margin: 0;
+  font-family: 'Manrope', sans-serif;
   font-size: 0.92rem;
   line-height: 1.05;
 }
@@ -481,6 +483,13 @@
   z-index: 20;
   overflow: hidden;
   background: radial-gradient(circle at 50% 42%, rgba(188, 193, 202, 0.98), rgba(155, 161, 171, 0.98) 52%, rgba(122, 129, 140, 0.99));
+  opacity: 1;
+  transition: opacity 420ms ease;
+}
+
+.reveal-overlay.is-closing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .reveal-overlay::before {
@@ -545,7 +554,7 @@
 .reveal-intro {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 1100ms ease, transform 1100ms ease;
+  transition: opacity 1500ms ease, transform 1500ms ease;
 }
 
 .reveal-intro.is-visible,
