@@ -121,7 +121,7 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
   ) => {
     const subtreeWidth = measureWidth(id)
     const x = left + subtreeWidth / 2
-    const y = panelPaddingTop + depth * levelGap
+    const y = panelPaddingTop + nodeHeight / 2 + depth * levelGap
     positions[id] = { x, y }
 
     const children = getChildren(id)
@@ -172,11 +172,22 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
     collectGroup(id)
   }
 
-  const sceneWidth = Math.max(760, ...drafts.map((draft) => draft.width))
-  let currentTop = 24
+  const panelStartX = 24
+  const panelStartY = 24
+  const totalArea = drafts.reduce((sum, draft) => sum + draft.width * draft.height, 0)
+  const targetRowWidth = Math.max(980, Math.min(2200, Math.round(Math.sqrt(totalArea) * 1.75)))
+  let currentLeft = panelStartX
+  let currentTop = panelStartY
+  let currentRowHeight = 0
 
   return drafts.map((draft) => {
-    const left = (sceneWidth - draft.width) / 2
+    if (currentLeft > panelStartX && currentLeft + draft.width > targetRowWidth) {
+      currentLeft = panelStartX
+      currentTop += currentRowHeight + panelGap
+      currentRowHeight = 0
+    }
+
+    const left = currentLeft
     const group: FamilyGroup = {
       rootId: draft.rootId,
       positions: Object.fromEntries(
@@ -189,7 +200,8 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
       bounds: { left, top: currentTop, width: draft.width, height: draft.height },
     }
 
-    currentTop += draft.height + panelGap
+    currentLeft += draft.width + panelGap
+    currentRowHeight = Math.max(currentRowHeight, draft.height)
 
     return group
   })
@@ -198,9 +210,11 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
 function FamilyTreeCanvas({
   dynasty,
   users,
+  highlightUserId,
 }: {
   dynasty: Dynasty
   users: Record<string, UserNode>
+  highlightUserId: string
 }) {
   const ZOOM_MIN = 0.45
   const ZOOM_MAX = 1.9
@@ -305,12 +319,14 @@ function FamilyTreeCanvas({
 
               {Object.entries(group.positions).map(([id, point]) => {
                 const user = users[id]
+                const isHighlighted = id === highlightUserId
                 return (
                   <article
                     key={id}
-                    className="tree-node"
+                    className={`tree-node ${isHighlighted ? 'is-highlight' : ''}`}
                     style={{ left: `${point.x - group.bounds.left}px`, top: `${point.y - group.bounds.top}px` }}
                   >
+                    {isHighlighted ? <span className="tree-node-badge">You</span> : null}
                     <h3>{user.email.split('@')[0]}</h3>
                   </article>
                 )
@@ -481,6 +497,7 @@ function App() {
     <main className="app-shell" style={dynastyThemeVars}>
       <header className="app-topbar">
         <div className="topbar-title-row">
+          <h1>CSA Family Trees</h1>
           <button type="button" className="return-login-btn" onClick={returnToLogin}>
             Return to Login
           </button>
@@ -507,7 +524,7 @@ function App() {
         </div>
       </header>
 
-      <FamilyTreeCanvas dynasty={activeDynasty} users={usersById} />
+      <FamilyTreeCanvas dynasty={activeDynasty} users={usersById} highlightUserId={activeUserId} />
 
       {showReveal && (
         <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''}`}>
