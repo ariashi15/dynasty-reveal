@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import './App.css'
 
 type Dynasty = 'fire' | 'water' | 'earth' | 'wind'
@@ -223,6 +223,10 @@ function FamilyTreeCanvas({
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState<Point | null>(null)
+  const [searchInput, setSearchInput] = useState('')
+  const [searchFocus, setSearchFocus] = useState(false)
+  const [searchHitId, setSearchHitId] = useState('')
+  const viewportRef = useRef<HTMLDivElement | null>(null)
 
   const familyGroups = useMemo(() => buildFamilyGroups(users, dynasty), [users, dynasty])
 
@@ -234,6 +238,123 @@ function FamilyTreeCanvas({
 
     return { sceneWidth, sceneHeight, familyGroups }
   }, [familyGroups])
+
+  const dynastyMemberList = useMemo(
+    () =>
+      Object.entries(users)
+        .filter(([, user]) => user.dynasty === dynasty)
+        .map(([id, user]) => ({
+          id,
+          name: user.name,
+          email: user.email,
+          username: user.email.split('@')[0],
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [users, dynasty],
+  )
+
+  const searchIndexById = useMemo(
+    () => new Map(dynastyMemberList.map((member) => [member.id, member])),
+    [dynastyMemberList],
+  )
+
+  const suggestions = useMemo(() => {
+    const needle = searchInput.trim().toLowerCase()
+    if (!needle) {
+      return [] as string[]
+    }
+
+    return dynastyMemberList
+      .filter((member) => {
+        const haystack = `${member.name} ${member.email} ${member.username}`.toLowerCase()
+        return haystack.includes(needle)
+      })
+      .slice(0, 8)
+      .map((member) => member.id)
+  }, [searchInput, dynastyMemberList])
+
+  const nodePositionById = useMemo(() => {
+    const byId = new Map<string, Point>()
+    for (const group of layout.familyGroups) {
+      for (const [id, point] of Object.entries(group.positions)) {
+        byId.set(id, point)
+      }
+    }
+    return byId
+  }, [layout.familyGroups])
+
+  const jumpToNode = (id: string) => {
+    const point = nodePositionById.get(id)
+    const viewport = viewportRef.current
+    if (!point || !viewport) {
+      return
+    }
+
+    const nextZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom))
+    const centerX = viewport.clientWidth / 2
+    const centerY = viewport.clientHeight / 2
+
+    setZoom(nextZoom)
+    setPan({
+      x: centerX - point.x * nextZoom,
+      y: centerY - point.y * nextZoom,
+    })
+    setSearchHitId(id)
+  }
+
+  useEffect(() => {
+    if (!searchHitId) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setSearchHitId('')
+    }, 2200)
+
+    return () => window.clearTimeout(timer)
+  }, [searchHitId])
+
+  useEffect(() => {
+    setSearchInput('')
+    setSearchFocus(false)
+    setSearchHitId('')
+  }, [dynasty])
+
+  const selectSuggestion = (id: string) => {
+    const member = searchIndexById.get(id)
+    if (!member) {
+      return
+    }
+
+    setSearchInput(member.name)
+    setSearchFocus(false)
+    jumpToNode(id)
+  }
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const normalized = searchInput.trim().toLowerCase()
+    if (!normalized) {
+      return
+    }
+
+    const exact = dynastyMemberList.find((member) => {
+      return (
+        member.name.toLowerCase() === normalized ||
+        member.email.toLowerCase() === normalized ||
+        member.username.toLowerCase() === normalized
+      )
+    })
+
+    if (exact) {
+      selectSuggestion(exact.id)
+      return
+    }
+
+    if (suggestions.length > 0) {
+      selectSuggestion(suggestions[0])
+    }
+  }
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -258,28 +379,64 @@ function FamilyTreeCanvas({
     <section className="tree-shell">
       <header className="tree-header">
         <h2>{DYNASTY_STYLE[dynasty].label} Dynasty Family Tree</h2>
-        <div className="tree-controls">
-          <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
-            -
-          </button>
-          <span>{Math.round(zoom * 100)}%</span>
-          <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
-            +
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setZoom(1)
-              setPan({ x: 0, y: 0 })
-            }}
-          >
-            Reset
-          </button>
+        <div className="tree-header-actions">
+          <form className="tree-search" onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              value={searchInput}
+              placeholder="Search person"
+              onFocus={() => setSearchFocus(true)}
+              onBlur={() => {
+                window.setTimeout(() => setSearchFocus(false), 120)
+              }}
+              onChange={(event) => setSearchInput(event.target.value)}
+              aria-label="Search for an individual in this dynasty"
+            />
+            {searchFocus && suggestions.length > 0 ? (
+              <ul className="tree-search-list" role="listbox" aria-label="Search suggestions">
+                {suggestions.map((id) => {
+                  const member = searchIndexById.get(id)
+                  if (!member) {
+                    return null
+                  }
+
+                  return (
+                    <li key={id}>
+                      <button type="button" onMouseDown={() => selectSuggestion(id)}>
+                        <strong>{member.name}</strong>
+                        <span>{member.email}</span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : null}
+          </form>
+
+          <div className="tree-controls">
+            <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
+              -
+            </button>
+            <span>{Math.round(zoom * 100)}%</span>
+            <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
+              +
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setZoom(1)
+                setPan({ x: 0, y: 0 })
+              }}
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </header>
 
       <div
         className="tree-viewport"
+        ref={viewportRef}
         onPointerDown={startDrag}
         onPointerMove={drag}
         onPointerUp={endDrag}
@@ -320,10 +477,11 @@ function FamilyTreeCanvas({
               {Object.entries(group.positions).map(([id, point]) => {
                 const user = users[id]
                 const isHighlighted = id === highlightUserId
+                const isSearchHit = id === searchHitId
                 return (
                   <article
                     key={id}
-                    className={`tree-node ${isHighlighted ? 'is-highlight' : ''}`}
+                    className={`tree-node ${isHighlighted ? 'is-highlight' : ''} ${isSearchHit ? 'is-search-hit' : ''}`}
                     style={{ left: `${point.x - group.bounds.left}px`, top: `${point.y - group.bounds.top}px` }}
                   >
                     {isHighlighted ? <span className="tree-node-badge">You</span> : null}
@@ -494,13 +652,15 @@ function App() {
       <header className="app-topbar">
         <div className="topbar-title-row">
           <h1>CSA Family Trees</h1>
-          <button type="button" className="return-login-btn" onClick={returnToLogin}>
-            Return to Login
-          </button>
-        </div>
-        <div className="identity-chip">
-          <span>{activeUser.name}</span>
-          <strong>{DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
+          <div className="topbar-actions">
+            <div className="identity-chip" aria-label="Current dynasty assignment">
+              <span>{activeUser.name}:</span>
+              <strong>{DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
+            </div>
+            <button type="button" className="return-login-btn" onClick={returnToLogin}>
+              Return to Login
+            </button>
+          </div>
         </div>
 
         <div className="dynasty-tabs" role="tablist" aria-label="Dynasty tabs">
