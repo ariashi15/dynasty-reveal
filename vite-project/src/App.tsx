@@ -234,11 +234,31 @@ function FamilyTreeCanvas({
   const ZOOM_MIN = 0.45
   const ZOOM_MAX = 1.9
   const PAN_DRAG_FACTOR = 0.72
+  const MOBILE_BASE_SCALE = 0.74
+
+  const getBaseScale = () => {
+    if (window.innerWidth <= 760) {
+      return MOBILE_BASE_SCALE
+    }
+    return 1
+  }
 
   const [zoom, setZoom] = useState(1)
+  const [baseScale, setBaseScale] = useState(() => (typeof window !== 'undefined' ? getBaseScale() : 1))
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState<Point | null>(null)
   const viewportRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setBaseScale(getBaseScale())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const familyGroups = useMemo(() => buildFamilyGroups(users, dynasty), [users, dynasty])
 
@@ -278,10 +298,10 @@ function FamilyTreeCanvas({
 
     setZoom(nextZoom)
     setPan({
-      x: centerX - point.x * nextZoom,
-      y: centerY - point.y * nextZoom,
+      x: centerX - point.x * nextZoom * baseScale,
+      y: centerY - point.y * nextZoom * baseScale,
     })
-  }, [jumpRequest, nodePositionById, zoom])
+  }, [jumpRequest, nodePositionById, zoom, baseScale])
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -340,7 +360,7 @@ function FamilyTreeCanvas({
           style={{
             width: `${layout.sceneWidth}px`,
             height: `${layout.sceneHeight}px`,
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom * baseScale})`,
           }}
         >
           {layout.familyGroups.map((group) => (
@@ -757,7 +777,10 @@ function App() {
               <div className="reveal-hold" aria-hidden="true" />
             ) : (
               <div className="reveal-message">
-                <h2 className="dynasty-name-enter">{DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</h2>
+                <h2 className="dynasty-name-enter">
+                  <span>{DYNASTY_STYLE[activeUser.dynasty].label}</span>
+                  <span>Dynasty</span>
+                </h2>
               </div>
             )}
             <div className="reveal-actions">
