@@ -463,10 +463,15 @@ function App() {
 
   const activeUser = activeUserId ? usersById[activeUserId] : undefined
   const activeTheme = DYNASTY_STYLE[activeDynasty]
+  const assignedTheme = activeUser ? DYNASTY_STYLE[activeUser.dynasty] : activeTheme
   const activeDynastyIndex = Math.max(0, DYNASTIES.indexOf(activeDynasty))
   const dynastyThemeVars = {
     ['--dynasty-accent' as string]: activeTheme.accent,
     ['--dynasty-glow' as string]: activeTheme.glow,
+  } as CSSProperties
+  const badgeThemeVars = {
+    ['--badge-accent' as string]: assignedTheme.accent,
+    ['--badge-glow' as string]: assignedTheme.glow,
   } as CSSProperties
 
   const searchableUsers = useMemo(
@@ -616,9 +621,8 @@ function App() {
         <div className="topbar-title-row">
           <h1>CSA Family Trees</h1>
           <div className="topbar-actions">
-            <div className="identity-chip" aria-label="Current dynasty assignment">
-              <span>{activeUser.name}:</span>
-              <strong>{DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
+            <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
+              <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
             </div>
             <button type="button" className="return-login-btn" onClick={returnToLogin}>
               Return to Login
