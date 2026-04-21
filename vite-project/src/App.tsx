@@ -211,10 +211,14 @@ function FamilyTreeCanvas({
   dynasty,
   users,
   highlightUserId,
+  searchedUserId,
+  jumpRequest,
 }: {
   dynasty: Dynasty
   users: Record<string, UserNode>
   highlightUserId: string
+  searchedUserId: string
+  jumpRequest: { id: string; token: number } | null
 }) {
   const ZOOM_MIN = 0.45
   const ZOOM_MAX = 1.9
@@ -223,9 +227,6 @@ function FamilyTreeCanvas({
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState<Point | null>(null)
-  const [searchInput, setSearchInput] = useState('')
-  const [searchFocus, setSearchFocus] = useState(false)
-  const [searchHitId, setSearchHitId] = useState('')
   const viewportRef = useRef<HTMLDivElement | null>(null)
 
   const familyGroups = useMemo(() => buildFamilyGroups(users, dynasty), [users, dynasty])
@@ -239,40 +240,6 @@ function FamilyTreeCanvas({
     return { sceneWidth, sceneHeight, familyGroups }
   }, [familyGroups])
 
-  const dynastyMemberList = useMemo(
-    () =>
-      Object.entries(users)
-        .filter(([, user]) => user.dynasty === dynasty)
-        .map(([id, user]) => ({
-          id,
-          name: user.name,
-          email: user.email,
-          username: user.email.split('@')[0],
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [users, dynasty],
-  )
-
-  const searchIndexById = useMemo(
-    () => new Map(dynastyMemberList.map((member) => [member.id, member])),
-    [dynastyMemberList],
-  )
-
-  const suggestions = useMemo(() => {
-    const needle = searchInput.trim().toLowerCase()
-    if (!needle) {
-      return [] as string[]
-    }
-
-    return dynastyMemberList
-      .filter((member) => {
-        const haystack = `${member.name} ${member.email} ${member.username}`.toLowerCase()
-        return haystack.includes(needle)
-      })
-      .slice(0, 8)
-      .map((member) => member.id)
-  }, [searchInput, dynastyMemberList])
-
   const nodePositionById = useMemo(() => {
     const byId = new Map<string, Point>()
     for (const group of layout.familyGroups) {
@@ -283,8 +250,12 @@ function FamilyTreeCanvas({
     return byId
   }, [layout.familyGroups])
 
-  const jumpToNode = (id: string) => {
-    const point = nodePositionById.get(id)
+  useEffect(() => {
+    if (!jumpRequest) {
+      return
+    }
+
+    const point = nodePositionById.get(jumpRequest.id)
     const viewport = viewportRef.current
     if (!point || !viewport) {
       return
@@ -299,62 +270,7 @@ function FamilyTreeCanvas({
       x: centerX - point.x * nextZoom,
       y: centerY - point.y * nextZoom,
     })
-    setSearchHitId(id)
-  }
-
-  useEffect(() => {
-    if (!searchHitId) {
-      return
-    }
-
-    const timer = window.setTimeout(() => {
-      setSearchHitId('')
-    }, 2200)
-
-    return () => window.clearTimeout(timer)
-  }, [searchHitId])
-
-  useEffect(() => {
-    setSearchInput('')
-    setSearchFocus(false)
-    setSearchHitId('')
-  }, [dynasty])
-
-  const selectSuggestion = (id: string) => {
-    const member = searchIndexById.get(id)
-    if (!member) {
-      return
-    }
-
-    setSearchInput(member.name)
-    setSearchFocus(false)
-    jumpToNode(id)
-  }
-
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const normalized = searchInput.trim().toLowerCase()
-    if (!normalized) {
-      return
-    }
-
-    const exact = dynastyMemberList.find((member) => {
-      return (
-        member.name.toLowerCase() === normalized ||
-        member.email.toLowerCase() === normalized ||
-        member.username.toLowerCase() === normalized
-      )
-    })
-
-    if (exact) {
-      selectSuggestion(exact.id)
-      return
-    }
-
-    if (suggestions.length > 0) {
-      selectSuggestion(suggestions[0])
-    }
-  }
+  }, [jumpRequest, nodePositionById, zoom])
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -379,58 +295,23 @@ function FamilyTreeCanvas({
     <section className="tree-shell">
       <header className="tree-header">
         <h2>{DYNASTY_STYLE[dynasty].label} Dynasty Family Tree</h2>
-        <div className="tree-header-actions">
-          <form className="tree-search" onSubmit={handleSearchSubmit}>
-            <input
-              type="text"
-              value={searchInput}
-              placeholder="Search person"
-              onFocus={() => setSearchFocus(true)}
-              onBlur={() => {
-                window.setTimeout(() => setSearchFocus(false), 120)
-              }}
-              onChange={(event) => setSearchInput(event.target.value)}
-              aria-label="Search for an individual in this dynasty"
-            />
-            {searchFocus && suggestions.length > 0 ? (
-              <ul className="tree-search-list" role="listbox" aria-label="Search suggestions">
-                {suggestions.map((id) => {
-                  const member = searchIndexById.get(id)
-                  if (!member) {
-                    return null
-                  }
-
-                  return (
-                    <li key={id}>
-                      <button type="button" onMouseDown={() => selectSuggestion(id)}>
-                        <strong>{member.name}</strong>
-                        <span>{member.email}</span>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            ) : null}
-          </form>
-
-          <div className="tree-controls">
-            <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
-              -
-            </button>
-            <span>{Math.round(zoom * 100)}%</span>
-            <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
-              +
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setZoom(1)
-                setPan({ x: 0, y: 0 })
-              }}
-            >
-              Reset
-            </button>
-          </div>
+        <div className="tree-controls">
+          <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
+            -
+          </button>
+          <span>{Math.round(zoom * 100)}%</span>
+          <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
+            +
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setZoom(1)
+              setPan({ x: 0, y: 0 })
+            }}
+          >
+            Reset
+          </button>
         </div>
       </header>
 
@@ -477,7 +358,7 @@ function FamilyTreeCanvas({
               {Object.entries(group.positions).map(([id, point]) => {
                 const user = users[id]
                 const isHighlighted = id === highlightUserId
-                const isSearchHit = id === searchHitId
+                const isSearchHit = id === searchedUserId
                 return (
                   <article
                     key={id}
@@ -509,6 +390,10 @@ function App() {
   const [revealDone, setRevealDone] = useState(false)
   const [showCloseButton, setShowCloseButton] = useState(false)
   const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name'>('loading')
+  const [searchInput, setSearchInput] = useState('')
+  const [searchFocus, setSearchFocus] = useState(false)
+  const [searchedUserId, setSearchedUserId] = useState('')
+  const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
 
   useEffect(() => {
     let ignore = false
@@ -583,6 +468,84 @@ function App() {
     ['--dynasty-accent' as string]: activeTheme.accent,
     ['--dynasty-glow' as string]: activeTheme.glow,
   } as CSSProperties
+
+  const searchableUsers = useMemo(
+    () =>
+      Object.entries(usersById)
+        .map(([id, user]) => ({
+          id,
+          dynasty: user.dynasty,
+          emailPrefix: user.email.split('@')[0],
+        }))
+        .sort((a, b) => a.emailPrefix.localeCompare(b.emailPrefix)),
+    [usersById],
+  )
+
+  const searchIndexById = useMemo(() => new Map(searchableUsers.map((member) => [member.id, member])), [searchableUsers])
+
+  const searchSuggestions = useMemo(() => {
+    const needle = searchInput.trim().toLowerCase()
+    if (!needle) {
+      return [] as string[]
+    }
+
+    return searchableUsers
+      .filter((member) => member.emailPrefix.toLowerCase().includes(needle))
+      .slice(0, 8)
+      .map((member) => member.id)
+  }, [searchInput, searchableUsers])
+
+  const jumpToUser = (id: string) => {
+    const match = searchIndexById.get(id)
+    if (!match) {
+      return
+    }
+
+    setActiveDynasty(match.dynasty)
+    setSearchedUserId(id)
+    setJumpRequest({ id, token: Date.now() })
+  }
+
+  const selectSearchSuggestion = (id: string) => {
+    const match = searchIndexById.get(id)
+    if (!match) {
+      return
+    }
+
+    setSearchInput(match.emailPrefix)
+    setSearchFocus(false)
+    jumpToUser(id)
+  }
+
+  const handleTreeSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const needle = searchInput.trim().toLowerCase()
+    if (!needle) {
+      return
+    }
+
+    const exact = searchableUsers.find((member) => member.emailPrefix.toLowerCase() === needle)
+    if (exact) {
+      selectSearchSuggestion(exact.id)
+      return
+    }
+
+    if (searchSuggestions.length > 0) {
+      selectSearchSuggestion(searchSuggestions[0])
+    }
+  }
+
+  useEffect(() => {
+    if (!searchedUserId) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setSearchedUserId('')
+    }, 2400)
+
+    return () => window.clearTimeout(timer)
+  }, [searchedUserId])
 
   const returnToLogin = () => {
     setActiveUserId('')
@@ -663,24 +626,65 @@ function App() {
           </div>
         </div>
 
-        <div className="dynasty-tabs" role="tablist" aria-label="Dynasty tabs">
-          <div className="dynasty-tabs-indicator" style={{ transform: `translateX(${activeDynastyIndex * 100}%)` }} />
-          {DYNASTIES.map((dynasty) => (
-            <button
-              key={dynasty}
-              type="button"
-              role="tab"
-              aria-selected={activeDynasty === dynasty}
-              className={activeDynasty === dynasty ? 'active' : ''}
-              onClick={() => setActiveDynasty(dynasty)}
-            >
-              {DYNASTY_STYLE[dynasty].label}
-            </button>
-          ))}
+        <div className="topbar-nav-row">
+          <div className="dynasty-tabs" role="tablist" aria-label="Dynasty tabs">
+            <div className="dynasty-tabs-indicator" style={{ transform: `translateX(${activeDynastyIndex * 100}%)` }} />
+            {DYNASTIES.map((dynasty) => (
+              <button
+                key={dynasty}
+                type="button"
+                role="tab"
+                aria-selected={activeDynasty === dynasty}
+                className={activeDynasty === dynasty ? 'active' : ''}
+                onClick={() => setActiveDynasty(dynasty)}
+              >
+                {DYNASTY_STYLE[dynasty].label}
+              </button>
+            ))}
+          </div>
+
+          <form className="global-tree-search" onSubmit={handleTreeSearchSubmit}>
+            <span className="global-tree-search-icon" aria-hidden="true" />
+            <input
+              type="text"
+              value={searchInput}
+              placeholder="Search for anyone"
+              onFocus={() => setSearchFocus(true)}
+              onBlur={() => {
+                window.setTimeout(() => setSearchFocus(false), 120)
+              }}
+              onChange={(event) => setSearchInput(event.target.value)}
+              aria-label="Search across all dynasties by email prefix"
+            />
+            {searchFocus && searchSuggestions.length > 0 ? (
+              <ul className="global-tree-search-list" role="listbox" aria-label="Search suggestions">
+                {searchSuggestions.map((id) => {
+                  const member = searchIndexById.get(id)
+                  if (!member) {
+                    return null
+                  }
+
+                  return (
+                    <li key={id}>
+                      <button type="button" onMouseDown={() => selectSearchSuggestion(id)}>
+                        {member.emailPrefix}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : null}
+          </form>
         </div>
       </header>
 
-      <FamilyTreeCanvas dynasty={activeDynasty} users={usersById} highlightUserId={activeUserId} />
+      <FamilyTreeCanvas
+        dynasty={activeDynasty}
+        users={usersById}
+        highlightUserId={activeUserId}
+        searchedUserId={searchedUserId}
+        jumpRequest={jumpRequest}
+      />
 
       {showReveal && (
         <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''}`}>
