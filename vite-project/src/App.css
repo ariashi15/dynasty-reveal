@@ -340,8 +340,28 @@
   isolation: isolate;
   z-index: 20;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, rgba(232, 233, 237, 0.95), rgba(204, 209, 218, 0.94) 52%, rgba(180, 186, 196, 0.98));
-  transition: background 800ms ease;
+  background: radial-gradient(circle at 50% 42%, rgba(188, 193, 202, 0.98), rgba(155, 161, 171, 0.98) 52%, rgba(122, 129, 140, 0.99));
+}
+
+.reveal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 20%,
+    color-mix(in srgb, var(--dynasty-glow) 76%, var(--dynasty-accent)),
+    var(--dynasty-accent) 54%,
+    color-mix(in srgb, var(--dynasty-accent) 72%, black)
+  );
+  opacity: 0;
+  transition: opacity 800ms ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.reveal-overlay.reveal-phase-name::before,
+.reveal-overlay.done::before {
+  opacity: 1;
 }
 
 .reveal-overlay.reveal-phase-loading .reveal-rings span {
@@ -359,7 +379,6 @@
 
 .reveal-overlay.reveal-phase-name,
 .reveal-overlay.done {
-  background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--dynasty-glow) 58%, white), color-mix(in srgb, var(--dynasty-accent) 66%, #141822) 52%, #182338);
 }
 
 .reveal-copy {
