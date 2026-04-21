@@ -295,6 +295,10 @@
 .dynasty-tabs button {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: transparent;
   border-color: transparent;
   border-radius: 999px;
@@ -303,6 +307,21 @@
   font-weight: 700;
   color: color-mix(in srgb, var(--dynasty-accent) 58%, #20324e);
   transition: color 220ms ease;
+}
+
+.dynasty-tab-logo {
+  width: 17px;
+  height: 17px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--tab-logo);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: var(--tab-logo);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  flex: 0 0 auto;
 }
 
 .dynasty-tabs button.active {

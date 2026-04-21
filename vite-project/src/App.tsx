@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import './App.css'
+import fireLogoSvg from './assets/dynasty-logos/firelogo-white.svg'
+import waterLogoSvg from './assets/dynasty-logos/waterlogo-white.svg'
+import earthLogoSvg from './assets/dynasty-logos/earthlogo-white.svg'
+import windLogoSvg from './assets/dynasty-logos/windlogo-white.svg'
 
 type Dynasty = 'fire' | 'water' | 'earth' | 'wind'
 
@@ -29,10 +33,17 @@ type FamilyGroup = {
 const DYNASTIES: Dynasty[] = ['fire', 'water', 'earth', 'wind']
 
 const DYNASTY_STYLE: Record<Dynasty, { label: string; accent: string; glow: string }> = {
-  fire: { label: 'Fire', accent: '#f55d3e', glow: '#ffb088' },
-  water: { label: 'Water', accent: '#2996e4', glow: '#88d3ff' },
-  earth: { label: 'Earth', accent: '#6f9a4e', glow: '#b6d48d' },
-  wind: { label: 'Wind', accent: '#6e7be8', glow: '#bac5ff' },
+  fire: { label: 'Fire', accent: '#ce7871', glow: '#ce7871' },
+  water: { label: 'Water', accent: '#77a6e4', glow: '#77a6e4' },
+  earth: { label: 'Earth', accent: '#7eb56f', glow: '#7eb56f' },
+  wind: { label: 'Wind', accent: '#eec95f', glow: '#eec95f' },
+}
+
+const DYNASTY_LOGO_SVG: Record<Dynasty, string> = {
+  fire: fireLogoSvg,
+  water: waterLogoSvg,
+  earth: earthLogoSvg,
+  wind: windLogoSvg,
 }
 
 function normalizeEmail(value: string) {
@@ -668,10 +679,15 @@ function App() {
                 type="button"
                 role="tab"
                 aria-selected={activeDynasty === dynasty}
-                className={activeDynasty === dynasty ? 'active' : ''}
+                className={activeDynasty === dynasty ? `active dynasty-tab-${dynasty}` : `dynasty-tab-${dynasty}`}
                 onClick={() => setActiveDynasty(dynasty)}
               >
-                {DYNASTY_STYLE[dynasty].label}
+                <span
+                  className="dynasty-tab-logo"
+                  style={{ ['--tab-logo' as string]: `url(${DYNASTY_LOGO_SVG[dynasty]})` }}
+                  aria-hidden="true"
+                />
+                <span>{DYNASTY_STYLE[dynasty].label}</span>
               </button>
             ))}
           </div>
