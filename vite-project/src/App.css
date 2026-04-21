@@ -164,8 +164,8 @@
 .return-login-btn {
   font-family: inherit;
   background: rgba(235, 239, 244, 0.96);
-  color: #2f394a;
-  border: 1px solid rgba(146, 157, 172, 0.55);
+  color: #7c7c7c;
+  border: 1px solid rgba(124, 124, 124, 0.46);
   padding: 12px 20px;
   min-height: 46px;
   border-radius: 999px;
@@ -178,8 +178,8 @@
 
 .return-login-btn:hover {
   background: rgba(223, 229, 237, 0.98);
-  color: #1f2735;
-  border-color: rgba(126, 139, 156, 0.62);
+  color: #707070;
+  border-color: rgba(124, 124, 124, 0.58);
 }
 
 .dynasty-tabs {
@@ -361,9 +361,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #7c7c7c;
 }
 
 .tree-controls button {
+  color: inherit;
   border-color: rgba(14, 26, 50, 0.25);
   background: #f5f9ff;
   padding: 6px 10px;
@@ -377,7 +381,7 @@
 
 .tree-viewport {
   border-radius: 20px;
-  border: 1px solid rgba(16, 28, 50, 0.2);
+  border: 1px solid color-mix(in srgb, var(--dynasty-accent) 28%, white);
   overflow: hidden;
   height: min(82vh, 920px);
   cursor: grab;
