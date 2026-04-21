@@ -462,19 +462,15 @@ function App() {
     return (
       <main className="login-screen">
         <section className="login-panel">
-          <p className="eyebrow">Dynasty Reveal</p>
-          <h1>Enter Your Email</h1>
-          <p className="support-copy">
-            No password needed. Your dynasty is assigned by JSON and revealed with a short animation.
-          </p>
+          <p className="eyebrow">CSA Spring 2026 Dynasty Reveal</p>
 
           <form onSubmit={handleLogin} className="login-form">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Enter your Northwestern email:</label>
             <div className="login-entry-row">
               <input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="you@u.northwestern.edu"
                 value={emailInput}
                 onChange={(event) => setEmailInput(event.target.value)}
               />
@@ -487,7 +483,7 @@ function App() {
           {loadError && <p className="error-text">{loadError}</p>}
           {!loadError && formError && <p className="error-text">{formError}</p>}
 
-          <p className="examples">Try: ember@example.com, sora@example.com, marin@example.com, terra@example.com</p>
+          {/* <p className="examples">Try: ember@example.com, sora@example.com, marin@example.com, terra@example.com</p> */}
         </section>
       </main>
     )
