@@ -1,0 +1,32 @@
+{
+  "invitations": {
+    "fire": {
+      "title": "Ember Night at the Atrium",
+      "date": "Friday, May 15, 2026 at 7:00 PM",
+      "location": "The Atrium at North Hall",
+      "rsvpLink": "https://example.com/rsvp/fire",
+      "heads": ["Ann", "Bob", "Chloe"]
+    },
+    "water": {
+      "title": "Tidal Lounge Social",
+      "date": "Saturday, May 16, 2026 at 6:30 PM",
+      "location": "Lakeview Terrace",
+      "rsvpLink": "https://example.com/rsvp/water",
+      "heads": ["Ann", "Bob", "Chloe"]
+    },
+    "earth": {
+      "title": "Harvest Hall Gathering",
+      "date": "Sunday, May 17, 2026 at 5:30 PM",
+      "location": "The Greenhouse Commons",
+      "rsvpLink": "https://example.com/rsvp/earth",
+      "heads": ["Ann", "Bob", "Chloe"]
+    },
+    "wind": {
+      "title": "Skyline Rooftop Meetup",
+      "date": "Thursday, May 14, 2026 at 8:00 PM",
+      "location": "The Rooftop at West Tower",
+      "rsvpLink": "https://example.com/rsvp/wind",
+      "heads": ["Ann", "Bob", "Chloe"]
+    }
+  }
+}
