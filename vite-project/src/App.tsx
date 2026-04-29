@@ -679,7 +679,7 @@ function App() {
     <main className="app-shell" style={dynastyThemeVars}>
       <header className="app-topbar">
         <div className="topbar-title-row">
-          <h1>Northwestern CSA Family Trees</h1>
+          <h1>Northwestern CSA Dynasties</h1>
           <div className="topbar-actions">
             <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
               <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
