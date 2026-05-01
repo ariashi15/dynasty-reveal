@@ -498,6 +498,17 @@
   box-shadow: 0 8px 18px color-mix(in srgb, var(--dynasty-accent) 34%, transparent);
 }
 
+.tree-node-badge.head-badge {
+  left: -7px;
+  right: auto;
+  top: -9px;
+  font-size: 0.7rem;
+  padding: 4px 9px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+}
+
 .tree-node h3 {
   margin: 0;
   font-family: 'Manrope', sans-serif;

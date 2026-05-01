@@ -13,6 +13,7 @@ type UserNode = {
   name: string
   dynasty: Dynasty
   littles: string[]
+  head?: boolean
 }
 
 type UsersPayload = {
@@ -427,6 +428,14 @@ function FamilyTreeCanvas({
                     className={`tree-node ${isHighlighted ? 'is-highlight' : ''} ${isSearchHit ? 'is-search-hit' : ''}`}
                     style={{ left: `${point.x - group.bounds.left}px`, top: `${point.y - group.bounds.top}px` }}
                   >
+                    {user.head ? (
+                      <span
+                        className="tree-node-badge head-badge"
+                        style={{ background: DYNASTY_STYLE[user.dynasty].accent }}
+                      >
+                        {`${DYNASTY_STYLE[user.dynasty].label} HEAD`.toUpperCase()}
+                      </span>
+                    ) : null}
                     {isHighlighted ? <span className="tree-node-badge">You</span> : null}
                     <h3>{user.email.split('@')[0]}</h3>
                   </article>
@@ -941,7 +950,8 @@ function App() {
               </p>
               <p className="invitation-footer">We're so excited to meet you!</p>
               <p className="invitation-signoff">
-                - Your {DYNASTY_STYLE[activeUser.dynasty].label} Heads, {formatHeadsList(activeInvitation.heads)}
+                Your {DYNASTY_STYLE[activeUser.dynasty].label} heads,<br></br>
+                {formatHeadsList(activeInvitation.heads)}
               </p>
             </article>
           </div>
