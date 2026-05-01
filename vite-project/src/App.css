@@ -462,7 +462,7 @@
   background: #fff;
   border: 1px solid rgba(15, 27, 49, 0.18);
   box-shadow: 0 8px 30px rgba(13, 24, 44, 0.14);
-  padding: 12px;
+  padding: 16px;
   text-align: left;
   display: grid;
   place-items: center;
@@ -1197,7 +1197,7 @@
     min-width: 100px;
     max-width: 160px;
     min-height: 56px;
-    padding: 10px;
+    padding: 12px;
   }
 
   .tree-node h3 {
