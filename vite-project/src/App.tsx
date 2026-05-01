@@ -246,7 +246,6 @@ function FamilyTreeCanvas({
 }) {
   const ZOOM_MIN = 0.45
   const ZOOM_MAX = 1.9
-  const PAN_DRAG_FACTOR = 0.72
   const MOBILE_BASE_SCALE = 0.74
 
   const getBaseScale = () => {
@@ -260,7 +259,9 @@ function FamilyTreeCanvas({
   const [baseScale, setBaseScale] = useState(() => (typeof window !== 'undefined' ? getBaseScale() : 1))
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 })
   const [dragStart, setDragStart] = useState<Point | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
   const viewportRef = useRef<HTMLDivElement | null>(null)
+  const DRAG_THRESHOLD = 5
 
   useEffect(() => {
     const handleResize = () => {
@@ -318,21 +319,38 @@ function FamilyTreeCanvas({
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId)
-    setDragStart({ x: event.clientX - pan.x, y: event.clientY - pan.y })
+    setDragStart({ x: event.clientX, y: event.clientY })
+    setIsDragging(false)
   }
 
   const drag = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!dragStart) {
       return
     }
+    
+    const deltaX = event.clientX - dragStart.x
+    const deltaY = event.clientY - dragStart.y
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    
+    // Only start panning after crossing the drag threshold
+    if (!isDragging && distance < DRAG_THRESHOLD) {
+      return
+    }
+    
+    if (!isDragging) {
+      setIsDragging(true)
+    }
+    
     setPan({
-      x: (event.clientX - dragStart.x) * PAN_DRAG_FACTOR,
-      y: (event.clientY - dragStart.y) * PAN_DRAG_FACTOR,
+      x: pan.x + deltaX,
+      y: pan.y + deltaY,
     })
+    setDragStart({ x: event.clientX, y: event.clientY })
   }
 
   const endDrag = () => {
     setDragStart(null)
+    setIsDragging(false)
   }
 
   return (
@@ -369,7 +387,7 @@ function FamilyTreeCanvas({
         onPointerLeave={endDrag}
       >
         <div
-          className={`tree-stage dynasty-${dynasty} ${dragStart ? 'dragging' : ''}`}
+          className={`tree-stage dynasty-${dynasty} ${isDragging ? 'dragging' : ''}`}
           style={{
             width: `${layout.sceneWidth}px`,
             height: `${layout.sceneHeight}px`,
