@@ -563,6 +563,20 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (activeUserId && usersById[activeUserId]) {
+      // Auto-center on the user when they arrive on the tree
+      window.setTimeout(() => {
+        const match = Object.entries(usersById).find(([id]) => id === activeUserId)
+        if (match) {
+          setActiveDynasty(usersById[activeUserId].dynasty)
+          setSearchedUserId(activeUserId)
+          setJumpRequest({ id: activeUserId, token: Date.now() })
+        }
+      }, 100)
+    }
+  }, [activeUserId, usersById])
+
   const activeUser = activeUserId ? usersById[activeUserId] : undefined
   const activeInvitation = activeUser ? invitationsByDynasty[activeUser.dynasty] : undefined
   const activeTheme = DYNASTY_STYLE[activeDynasty]

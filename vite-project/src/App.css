@@ -453,7 +453,9 @@
 .tree-node {
   position: absolute;
   box-sizing: border-box;
-  width: 124px;
+  width: fit-content;
+  min-width: 100px;
+  max-width: 180px;
   min-height: 60px;
   transform: translate(-50%, -50%);
   border-radius: 16px;
@@ -1191,7 +1193,9 @@
   }
 
   .tree-node {
-    width: 136px;
+    width: fit-content;
+    min-width: 100px;
+    max-width: 160px;
     min-height: 56px;
     padding: 10px;
   }
