@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { Mail } from 'lucide-react'
 import './App.css'
 import fireLogoSvg from './assets/dynasty-logos/firelogo-white.svg'
 import waterLogoSvg from './assets/dynasty-logos/waterlogo-white.svg'
@@ -16,6 +17,18 @@ type UserNode = {
 
 type UsersPayload = {
   users: Record<string, UserNode>
+}
+
+type InvitationInfo = {
+  name: string
+  date: string
+  location: string
+  rsvpLink: string
+  heads: string[]
+}
+
+type InvitationsPayload = {
+  invitations: Record<Dynasty, InvitationInfo>
 }
 
 type Point = {
@@ -411,6 +424,7 @@ function FamilyTreeCanvas({
 
 function App() {
   const [usersById, setUsersById] = useState<Record<string, UserNode>>({})
+  const [invitationsByDynasty, setInvitationsByDynasty] = useState<Partial<Record<Dynasty, InvitationInfo>>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [emailInput, setEmailInput] = useState('')
@@ -422,11 +436,27 @@ function App() {
   const [revealDone, setRevealDone] = useState(false)
   const [showCloseButton, setShowCloseButton] = useState(false)
   const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name'>('loading')
+  const [showInvitationPopup, setShowInvitationPopup] = useState(false)
+  const [invitationClosing, setInvitationClosing] = useState(false)
+  const [invitationSettled, setInvitationSettled] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [searchFocus, setSearchFocus] = useState(false)
   const [searchedUserId, setSearchedUserId] = useState('')
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
   const closeRevealTimerRef = useRef<number | null>(null)
+  const closeInvitationTimerRef = useRef<number | null>(null)
+
+  const formatHeadsList = (heads: string[]) => {
+    if (heads.length <= 1) {
+      return heads[0] ?? ''
+    }
+
+    if (heads.length === 2) {
+      return `${heads[0]} and ${heads[1]}`
+    }
+
+    return `${heads.slice(0, -1).join(', ')}, and ${heads[heads.length - 1]}`
+  }
 
   useEffect(() => {
     let ignore = false
@@ -455,6 +485,33 @@ function App() {
     }
 
     loadUsers()
+
+    return () => {
+      ignore = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let ignore = false
+
+    const loadInvitations = async () => {
+      try {
+        const response = await fetch('/dynasty-invitations.json')
+        if (!response.ok) {
+          throw new Error(`Failed to load invitation data: ${response.status}`)
+        }
+        const data = (await response.json()) as InvitationsPayload
+        if (!ignore) {
+          setInvitationsByDynasty(data.invitations ?? {})
+        }
+      } catch {
+        if (!ignore) {
+          setInvitationsByDynasty({})
+        }
+      }
+    }
+
+    loadInvitations()
 
     return () => {
       ignore = true
@@ -500,10 +557,14 @@ function App() {
       if (closeRevealTimerRef.current !== null) {
         window.clearTimeout(closeRevealTimerRef.current)
       }
+      if (closeInvitationTimerRef.current !== null) {
+        window.clearTimeout(closeInvitationTimerRef.current)
+      }
     }
   }, [])
 
   const activeUser = activeUserId ? usersById[activeUserId] : undefined
+  const activeInvitation = activeUser ? invitationsByDynasty[activeUser.dynasty] : undefined
   const activeTheme = DYNASTY_STYLE[activeDynasty]
   const assignedTheme = activeUser ? DYNASTY_STYLE[activeUser.dynasty] : activeTheme
   const activeDynastyIndex = Math.max(0, DYNASTIES.indexOf(activeDynasty))
@@ -599,12 +660,18 @@ function App() {
       window.clearTimeout(closeRevealTimerRef.current)
       closeRevealTimerRef.current = null
     }
+    if (closeInvitationTimerRef.current !== null) {
+      window.clearTimeout(closeInvitationTimerRef.current)
+      closeInvitationTimerRef.current = null
+    }
     setActiveUserId('')
     setRevealClosing(false)
     setShowReveal(false)
     setRevealDone(false)
     setShowCloseButton(false)
     setRevealPhase('loading')
+    setShowInvitationPopup(false)
+    setInvitationClosing(false)
     setActiveDynasty('fire')
     setEmailInput('')
     setFormError('')
@@ -628,6 +695,8 @@ function App() {
     setFormError('')
     setActiveUserId(found[0])
     setActiveDynasty(found[1].dynasty)
+    setShowInvitationPopup(false)
+    setInvitationClosing(false)
     setShowReveal(true)
   }
 
@@ -640,8 +709,26 @@ function App() {
     closeRevealTimerRef.current = window.setTimeout(() => {
       setShowReveal(false)
       setRevealClosing(false)
+      setShowInvitationPopup(true)
+      setInvitationClosing(false)
+      setInvitationSettled(false)
+      window.setTimeout(() => setInvitationSettled(true), 820)
       closeRevealTimerRef.current = null
-    }, 430)
+    }, 0)
+  }
+
+  const closeInvitationPopup = () => {
+    if (invitationClosing) {
+      return
+    }
+
+    setInvitationClosing(true)
+    closeInvitationTimerRef.current = window.setTimeout(() => {
+      setShowInvitationPopup(false)
+      setInvitationClosing(false)
+      setInvitationSettled(false)
+      closeInvitationTimerRef.current = null
+    }, 320)
   }
 
   if (!activeUser) {
@@ -681,6 +768,9 @@ function App() {
         <div className="topbar-title-row">
           <h1>Northwestern CSA Dynasties</h1>
           <div className="topbar-actions">
+            <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
+              <Mail size={20} color="#fff" />
+            </button>
             <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
               <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
             </div>
@@ -795,6 +885,36 @@ function App() {
           </div>
         </section>
       )}
+
+      {showInvitationPopup && activeUser && activeInvitation ? (
+        <section className={`invitation-overlay ${invitationClosing ? 'is-closing' : ''} ${invitationSettled ? 'invitation-settled' : ''}`}>
+          <div className="invitation-popup" role="dialog" aria-modal="true" aria-label="Dynasty invitation">
+            <div className="invitation-envelope" aria-hidden="true">
+              <span className="invitation-envelope-flap" />
+              <span className="invitation-envelope-seal" />
+            </div>
+            <article className="invitation-card">
+              <button type="button" className="invitation-close-btn" onClick={closeInvitationPopup} aria-label="Close invitation">
+                ×
+              </button>
+              <p className="invitation-line invitation-intro">You're invited to...</p>
+              <h2>{activeInvitation.name}</h2>
+              <p className="invitation-line"><strong>Date:</strong> {activeInvitation.date}</p>
+              <p className="invitation-line"><strong>Location:</strong> {activeInvitation.location}</p>
+              <p className="invitation-line invitation-rsvp">
+                <strong>RSVP:</strong>{' '}
+                <a href={activeInvitation.rsvpLink} target="_blank" rel="noreferrer">
+                  {activeInvitation.rsvpLink}
+                </a>
+              </p>
+              <p className="invitation-footer">We're so excited to meet you!</p>
+              <p className="invitation-signoff">
+                - Your {DYNASTY_STYLE[activeUser.dynasty].label} Heads, {formatHeadsList(activeInvitation.heads)}
+              </p>
+            </article>
+          </div>
+        </section>
+      ) : null}
     </main>
   )
 }
