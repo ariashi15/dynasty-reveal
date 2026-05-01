@@ -47,7 +47,7 @@ const DYNASTIES: Dynasty[] = ['fire', 'water', 'earth', 'wind']
 
 const DYNASTY_STYLE: Record<Dynasty, { label: string; accent: string; glow: string }> = {
   fire: { label: 'Fire', accent: '#ce7871', glow: '#ce7871' },
-  water: { label: 'Water', accent: '#77a6e4', glow: '#77a6e4' },
+  water: { label: 'Water', accent: '#5a8fd4', glow: '#5a8fd4' },
   earth: { label: 'Earth', accent: '#7eb56f', glow: '#7eb56f' },
   wind: { label: 'Wind', accent: '#eec95f', glow: '#eec95f' },
 }

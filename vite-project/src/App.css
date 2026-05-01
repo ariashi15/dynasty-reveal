@@ -185,7 +185,7 @@
 
 .return-login-btn {
   font-family: inherit;
-  background: rgba(235, 239, 244, 0.96);
+  background: rgba(225, 228, 231, 0.96);
   color: #7c7c7c;
   border: 1px solid rgba(200, 200, 200, 0.46);
   padding: 12px 20px;
@@ -527,7 +527,7 @@
   isolation: isolate;
   z-index: 20;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, rgba(188, 193, 202, 0.98), rgba(155, 161, 171, 0.98) 52%, rgba(122, 129, 140, 0.99));
+  background: radial-gradient(circle at 50% 42%, rgba(188, 193, 202, 1), rgba(155, 161, 171, 1) 52%, rgba(122, 129, 140, 1));
   opacity: 1;
   transition: opacity 420ms ease;
 }
