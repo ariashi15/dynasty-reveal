@@ -2277,6 +2277,13 @@
       "dynasty": "wind",
       "littles": [],
       "head": false
+    },
+    "skylakiang2026": {
+      "email": "skylakiang2026@u.northwestern.edu",
+      "name": "skylakiang2026",
+      "dynasty": "water",
+      "littles": ["katiechang2027"],
+      "head": false
     }
   }
 }
