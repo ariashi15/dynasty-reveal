@@ -64,7 +64,7 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
   fire: [
     { name: 'Chelsea Liu', bio: 'Hi! I’m Chelsea and I’m a junior studying data science and I’m from Seattle, WA! I love watching baseball and trying to discover the few good matcha places chicago has.', image: new URL('./assets/heads-profiles/chelsea.jpg', import.meta.url).href },
     { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a freshman studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: new URL('./assets/heads-profiles/justin.jpg', import.meta.url).href },
-    { name: 'Ashlyn Zhao', bio: 'im ashlyn zhao and im from san diego california, studying data science and econ as a first year. i lovelovelove baking and going swimming w friends and cafe hopping !!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
+    { name: 'Ashlyn Zhao', bio: 'Hi guys! I’m Ashlyn and I’m a first year studying Data Science and Economics from San Diego, California. I lovelovelove cafe hopping in Evanston/Chicago and baking sweet treats!!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
   ],
   water: [
     { name: 'Grace He', bio: 'Hi hi I’m Grace He. I’m currently a junior studying CS + Econ (very unique, I know) and I like to rock climb and paint!! Chicago, IL is my hometown :p', image: new URL('./assets/heads-profiles/grace.jpg', import.meta.url).href },
