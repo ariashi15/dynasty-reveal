@@ -77,7 +77,7 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
   ],
   wind: [
     { name: 'George Sun', bio: 'Hi guys I’m george! I’m a sophomore from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
-    { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
+    { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: new URL('./assets/heads-profiles/charlie.jpg', import.meta.url).href },
     { name: 'Daniel Wu', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
   ],
 }
@@ -312,7 +312,7 @@ function FamilyTreeCanvas({
   searchedUserId: string
   jumpRequest: { id: string; token: number } | null
 }) {
-  const ZOOM_MIN = 0.45
+  const ZOOM_MIN = 0.3
   const ZOOM_MAX = 1.9
   const MOBILE_BASE_SCALE = 0.74
 
