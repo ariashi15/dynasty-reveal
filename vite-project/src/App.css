@@ -184,8 +184,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 46px;
+  min-width: 46px;
   width: 46px;
   height: 46px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--badge-accent) 28%, white);
   background: color-mix(in srgb, var(--badge-accent) 40%, white);
@@ -1347,6 +1350,11 @@
   font-family: 'Manrope', sans-serif;
 }
 
+.mail-and-name-badge {
+  display: flex;
+  gap: 10px;
+}
+
 @media (max-width: 980px) {
   .app-shell {
     padding: 16px;
@@ -1422,14 +1430,14 @@
   .identity-chip,
   .return-login-btn,
   .mail-icon-btn {
-    min-height: 42px;
+    min-height: 46px;
     padding: 10px 14px;
     font-size: 0.88rem;
   }
 
   .mail-icon-btn {
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
     padding: 0;
   }
 
@@ -1579,6 +1587,14 @@
     gap: 8px;
   }
 
+  .mail-and-name-badge {
+    width: 100%;
+  }
+
+  .mail-and-name-badge .identity-chip {
+    flex: 1 1 auto;
+  }
+
   .identity-chip,
   .return-login-btn {
     width: 100%;
@@ -1645,5 +1661,11 @@
 
   .head-card p {
     font-size: 0.9rem;
+  }
+
+  .mail-and-name-badge {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }

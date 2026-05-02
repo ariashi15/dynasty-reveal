@@ -910,14 +910,14 @@ function App() {
           <h1 ref={topHeadingRef}>Northwestern CSA Dynasties</h1>
           <div className="topbar-actions">
             {!isBrowsingMode && activeUser && (
-              <>
+              <div className="mail-and-name-badge">
                 <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
                   <Mail size={20} color="#fff" />
                 </button>
                 <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
                   <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
                 </div>
-              </>
+              </div>
             )}
             <button type="button" className="return-login-btn" onClick={returnToLogin}>
               Return to Login
