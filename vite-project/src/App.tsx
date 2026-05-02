@@ -63,20 +63,20 @@ const DYNASTY_LOGO_SVG: Record<Dynasty, string> = {
 const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; image: string }>> = {
   fire: [
     { name: 'Chelsea Liu', bio: 'Passionate leader who brings energy to every gathering. Known for their ability to inspire and unite the dynasty.', image: 'https://ui-avatars.com/api/?name=Feihao&background=ce7871&color=fff&size=200' },
-    { name: 'Justin Tang', bio: 'Strategic thinker with a warm heart. Dedicated to fostering deep connections within the fire dynasty community.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' },
-    { name: 'Ashlyn Zhao', bio: 'Strategic thinker with a warm heart. Dedicated to fostering deep connections within the fire dynasty community.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' }
+    { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a freshman studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' },
+    { name: 'Ashlyn Zhao', bio: 'im ashlyn zhao and im from san diego california, studying data science and econ as a first year. i lovelovelove baking and going swimming w friends and cafe hopping !!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
   ],
   water: [
-    { name: 'Grace He', bio: 'Thoughtful and nurturing, always puts the needs of others first. Anchors the water dynasty with wisdom and compassion.', image: 'https://ui-avatars.com/api/?name=Helenzhu&background=5a8fd4&color=fff&size=200' },
-    { name: 'Jasmine Guo', bio: 'Dynamic and approachable, creates a welcoming environment for all. Bridges connections across the water dynasty beautifully.', image: 'https://ui-avatars.com/api/?name=Nataliewu&background=5a8fd4&color=fff&size=200' },
+    { name: 'Grace He', bio: 'Hi hi I’m Grace He. I’m currently a junior studying CS + Econ (very unique, I know) and I like to rock climb and paint!! Chicago, IL is my hometown :p', image: new URL('./assets/heads-profiles/grace.jpg', import.meta.url).href },
+    { name: 'Jasmine Guo', bio: 'HI EVERYONE IM JASMINE AND IM A JUNIOR FROM NEW YORK STUDYING BIOLOGY. I LIKE TO DANCE AND EAT AND WANT A PET SNAKE!', image: new URL('./assets/heads-profiles/jasmine.jpg', import.meta.url).href },
   ],
   earth: [
-    { name: 'Eric Dare', bio: 'Grounded and reliable, the foundation of the earth dynasty. Known for steady leadership and genuine care for members.', image: 'https://ui-avatars.com/api/?name=Audreyzhou&background=7eb56f&color=fff&size=200' },
-    { name: 'Sabrina Xu', bio: 'Visionary organizer who creates meaningful experiences. Helps the earth dynasty grow stronger through thoughtful planning.', image: 'https://ui-avatars.com/api/?name=Nicholasqiu&background=7eb56f&color=fff&size=200' },
-    { name: 'Mirabelle Jiang', bio: 'Visionary organizer who creates meaningful experiences. Helps the earth dynasty grow stronger through thoughtful planning.', image: 'https://ui-avatars.com/api/?name=Nicholasqiu&background=7eb56f&color=fff&size=200' },
+    { name: 'Eric Dare', bio: 'Grounded and reliable, the foundation of the earth dynasty. Known for steady leadership and genuine care for members.', image: new URL('./assets/heads-profiles/eric.jpg', import.meta.url).href },
+    { name: 'Sabrina Xu', bio: 'Hiii I’m Sabrina, a freshman from the best borough of all: Queens, NY, and I’m studying Biology and Global Health. Turtles are the best animals in the world 🐢🐢', image: new URL('./assets/heads-profiles/sabrina.jpg', import.meta.url).href },
+    { name: 'Mirabelle Jiang', bio: 'Hi I’m Mirabelle! Im a freshman from the land of abgs aka irvine, ca studying Econ & English. I like to eat sleep drive cars and scroll reels.', image: new URL('./assets/heads-profiles/mirabelle.jpg', import.meta.url).href },
   ],
   wind: [
-    { name: 'George Sun', bio: 'Free-spirited and inspiring, brings fresh perspectives to the wind dynasty. Encourages innovation and creative thinking.', image: 'https://ui-avatars.com/api/?name=Eileenchen&background=eec95f&color=333&size=200' },
+    { name: 'George Sun', bio: 'Hi guys I’m george! I’m a sophomore from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
     { name: 'Charlie Zhang', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
     { name: 'Daniel Wu', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
   ],
@@ -1012,8 +1012,8 @@ function App() {
                 <h2>Your dynasty heads are...</h2>
                 <div className="reveal-heads-grid">
                   {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
-                    <div key={idx} className="reveal-head-card">
-                      <img src={head.image} alt={head.name} className="reveal-head-image" />
+                    <div key={idx} className="head-card">
+                      <img src={head.image} alt={head.name} className="head-image" />
                       <h3>{head.name}</h3>
                       <p>{head.bio}</p>
                     </div>
