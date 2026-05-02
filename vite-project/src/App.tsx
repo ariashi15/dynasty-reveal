@@ -484,7 +484,7 @@ function App() {
   const [revealClosing, setRevealClosing] = useState(false)
   const [revealDone, setRevealDone] = useState(false)
   const [showCloseButton, setShowCloseButton] = useState(false)
-  const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name'>('loading')
+  const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name' | 'heads'>('loading')
   const [showInvitationPopup, setShowInvitationPopup] = useState(false)
   const [invitationClosing, setInvitationClosing] = useState(false)
   const [invitationSettled, setInvitationSettled] = useState(false)
@@ -793,7 +793,7 @@ function App() {
       setInvitationSettled(false)
       window.setTimeout(() => setInvitationSettled(true), 820)
       closeRevealTimerRef.current = null
-    }, 0)
+    }, 420)
   }
 
   const closeInvitationPopup = () => {
@@ -981,18 +981,31 @@ function App() {
               <div className="loading-orb" aria-hidden="true" />
             ) : revealPhase === 'intro' ? (
               <div className="reveal-hold" aria-hidden="true" />
-            ) : (
+            ) : revealPhase === 'name' ? (
               <div className="reveal-message">
                 <h2 className="dynasty-name-enter">
                   <span>{DYNASTY_STYLE[activeUser.dynasty].label}</span>
                   <span>Dynasty</span>
                 </h2>
               </div>
+            ) : (
+              <div className="reveal-heads-content">
+                <h2>Your dynasty heads are...</h2>
+                <div className="reveal-heads-grid">
+                  {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
+                    <div key={idx} className="reveal-head-card">
+                      <img src={head.image} alt={head.name} className="reveal-head-image" />
+                      <h3>{head.name}</h3>
+                      <p>{head.bio}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
             <div className="reveal-actions">
               {showCloseButton ? (
-                <button type="button" className={`reveal-close-btn ${revealDone ? 'is-visible' : ''}`} onClick={closeReveal}>
-                  Close
+                <button type="button" className={`reveal-close-btn ${revealDone ? 'is-visible' : ''}`} onClick={() => revealPhase === 'heads' ? closeReveal() : setRevealPhase('heads')}>
+                  {revealPhase === 'heads' ? 'Continue' : 'Continue'}
                 </button>
               ) : (
                 <span aria-hidden="true" />
@@ -1023,7 +1036,7 @@ function App() {
                   Partiful
                 </a>
               </p>
-              <p className="invitation-footer">We're so excited to meet you!</p>
+              <p className="invitation-footer">WE'RE SO EXCITED TO MEET YOU!!!!</p>
               <p className="invitation-signoff">
                 Your {DYNASTY_STYLE[activeUser.dynasty].label} heads,<br></br>
                 {formatHeadsList(activeInvitation.heads)}
