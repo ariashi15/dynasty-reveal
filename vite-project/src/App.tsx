@@ -1083,17 +1083,19 @@ function App() {
                     ‹
                   </button>
                   <div className="reveal-head-carousel-window">
-                    {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
-                      <article
-                        key={head.name}
-                        className={`head-card reveal-head-carousel-card ${idx === revealHeadIndex ? 'is-active' : ''}`}
-                        aria-hidden={idx !== revealHeadIndex}
-                      >
-                        <img src={head.image} alt={head.name} className="head-image" />
-                        <h3>{head.name}</h3>
-                        <p>{head.bio}</p>
-                      </article>
-                    ))}
+                    <div className="reveal-head-carousel-track" style={{ transform: `translateX(-${revealHeadIndex * 100}%)` }}>
+                      {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
+                        <article
+                          key={head.name}
+                          className="head-card reveal-head-carousel-card"
+                          aria-hidden={idx !== revealHeadIndex}
+                        >
+                          <img src={head.image} alt={head.name} className="head-image" />
+                          <h3>{head.name}</h3>
+                          <p>{head.bio}</p>
+                        </article>
+                      ))}
+                    </div>
                   </div>
                   <button
                     type="button"
