@@ -1014,7 +1014,7 @@
 }
 
 .invitation-popup {
-  --invite-paper-width: min(86vw, 560px);
+  --invite-paper-width: min(86vw, 600px);
   position: relative;
   width: min(92vw, 760px);
   min-height: 340px;
@@ -1096,7 +1096,7 @@
 
 .invitation-card h2 {
   margin: 8px 0 14px;
-  font-size: clamp(1.35rem, 3.5vw, 1.8rem);
+  font-size: 1.4rem;
   line-height: 1.2;
   color: #162944;
 }
@@ -1126,6 +1126,7 @@
   margin: 0;
   font-size: 0.96rem;
   line-height: 1.5;
+  text-align: right;
 }
 
 .invitation-close-btn {
@@ -1582,6 +1583,63 @@
   .dynasty-name-enter span + span {
     margin-left: 0;
   }
+
+  .invitation-overlay {
+    padding: 14px;
+  }
+
+  .invitation-popup {
+    --invite-paper-width: min(78vw, 460px);
+    width: min(88vw, 620px);
+    min-height: 300px;
+  }
+
+  .invitation-envelope {
+    width: calc(var(--invite-paper-width) + 36px);
+    height: 340px;
+    border-radius: 10px;
+  }
+
+  .invitation-envelope::before {
+    border-radius: 10px;
+  }
+
+  .invitation-envelope-flap {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .invitation-envelope-seal {
+    width: 14px;
+    height: 14px;
+  }
+
+  .invitation-card {
+    width: calc(var(--invite-paper-width) - 22px);
+    border-radius: 16px;
+    padding: 22px 22px 18px;
+  }
+
+  .invitation-card h2 {
+    margin: 6px 0 10px;
+    font-size: 1.4rem;
+  }
+
+  .invitation-line,
+  .invitation-footer {
+    font-size: 0.92rem;
+  }
+
+  .invitation-signoff {
+    font-size: 0.9rem;
+  }
+
+  .invitation-close-btn {
+    top: 12px;
+    right: 12px;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1678,6 +1736,31 @@
 
   .reveal-heads-content .head-card h3 {
     font-size: 1.1rem;
+  }
+
+  .invitation-popup {
+    --invite-paper-width: min(82vw, 410px);
+    min-height: 270px;
+  }
+
+  .invitation-envelope {
+    width: calc(var(--invite-paper-width) + 28px);
+    height: 300px;
+  }
+
+  .invitation-card {
+    width: calc(var(--invite-paper-width) - 18px);
+    padding: 18px 18px 16px;
+  }
+
+  .invitation-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .invitation-line,
+  .invitation-footer,
+  .invitation-signoff {
+    font-size: 0.86rem;
   }
 }
 

@@ -1147,7 +1147,7 @@ function App() {
               </p>
               <p className="invitation-footer">WE'RE SO EXCITED TO MEET YOU!!!!</p>
               <p className="invitation-signoff">
-                Your {DYNASTY_STYLE[activeUser.dynasty].label} heads,<br></br>
+                Your {DYNASTY_STYLE[activeUser.dynasty].label.toLowerCase()} heads,<br></br>
                 {formatHeadsList(activeInvitation.heads)}
               </p>
             </article>
