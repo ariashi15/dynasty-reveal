@@ -419,6 +419,12 @@
   text-align: center;
 }
 
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .tree-viewport {
   border-radius: 20px;
   border: 1px solid color-mix(in srgb, var(--dynasty-accent) 28%, white);

@@ -426,13 +426,15 @@ function FamilyTreeCanvas({
       <header className="tree-header">
         <h2>{DYNASTY_STYLE[dynasty].label} Dynasty Family Trees</h2>
         <div className="tree-controls">
-          <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
-            -
-          </button>
-          <span>{Math.round(zoom * 100)}%</span>
-          <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
-            +
-          </button>
+          <div className="zoom-controls">
+            <button type="button" onClick={() => setZoom((value) => Math.max(ZOOM_MIN, Number((value - 0.1).toFixed(2))))}>
+              -
+            </button>
+            <span>{Math.round(zoom * 100)}%</span>
+            <button type="button" onClick={() => setZoom((value) => Math.min(ZOOM_MAX, Number((value + 0.1).toFixed(2))))}>
+              +
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => {
