@@ -492,6 +492,7 @@ function App() {
   const [searchFocus, setSearchFocus] = useState(false)
   const [searchedUserId, setSearchedUserId] = useState('')
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
+  const [isBrowsingMode, setIsBrowsingMode] = useState(false)
   const closeRevealTimerRef = useRef<number | null>(null)
   const closeInvitationTimerRef = useRef<number | null>(null)
   const headsRef = useRef<HTMLElement | null>(null)
@@ -744,6 +745,7 @@ function App() {
       closeInvitationTimerRef.current = null
     }
     setActiveUserId('')
+    setIsBrowsingMode(false)
     setRevealClosing(false)
     setShowReveal(false)
     setRevealDone(false)
@@ -754,6 +756,10 @@ function App() {
     setActiveDynasty('fire')
     setEmailInput('')
     setFormError('')
+  }
+
+  const handleBrowsingMode = () => {
+    setIsBrowsingMode(true)
   }
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
@@ -810,7 +816,7 @@ function App() {
     }, 320)
   }
 
-  if (!activeUser) {
+  if (!activeUser && !isBrowsingMode) {
     return (
       <main className="login-screen">
         <section className="login-panel">
@@ -835,6 +841,15 @@ function App() {
           {loadError && <p className="error-text">{loadError}</p>}
           {!loadError && formError && <p className="error-text">{formError}</p>}
 
+          <button
+            type="button"
+            className="browsing-mode-btn"
+            onClick={handleBrowsingMode}
+            aria-label="Browse family tree without logging in"
+          >
+            <b>Not logging in, just browsing <span aria-hidden="true">-&gt;</span></b>
+          </button>
+
           {/* <p className="examples">Try: ember@example.com, sora@example.com, marin@example.com, terra@example.com</p> */}
         </section>
       </main>
@@ -847,12 +862,16 @@ function App() {
         <div className="topbar-title-row">
           <h1 ref={topHeadingRef}>Northwestern CSA Dynasties</h1>
           <div className="topbar-actions">
-            <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
-              <Mail size={20} color="#fff" />
-            </button>
-            <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
-              <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
-            </div>
+            {!isBrowsingMode && activeUser && (
+              <>
+                <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
+                  <Mail size={20} color="#fff" />
+                </button>
+                <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
+                  <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
+                </div>
+              </>
+            )}
             <button type="button" className="return-login-btn" onClick={returnToLogin}>
               Return to Login
             </button>
@@ -961,7 +980,7 @@ function App() {
         </div>
       </section>
 
-      {showReveal && (
+      {!isBrowsingMode && showReveal && activeUser && (
         <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''} ${revealClosing ? 'is-closing' : ''}`}>
           <div className="reveal-rings" aria-hidden="true">
             <span />
@@ -1015,7 +1034,7 @@ function App() {
         </section>
       )}
 
-      {showInvitationPopup && activeUser && activeInvitation ? (
+      {!isBrowsingMode && showInvitationPopup && activeUser && activeInvitation ? (
         <section className={`invitation-overlay ${invitationClosing ? 'is-closing' : ''} ${invitationSettled ? 'invitation-settled' : ''}`}>
           <div className="invitation-popup" role="dialog" aria-modal="true" aria-label="Dynasty invitation">
             <div className="invitation-envelope" aria-hidden="true">

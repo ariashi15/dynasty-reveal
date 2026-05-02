@@ -98,6 +98,24 @@
   font-size: 0.93rem;
 }
 
+.browsing-mode-btn {
+  margin-top: 0.7rem;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  font-size: 13px;
+}
+
+.browsing-mode-btn:hover {
+  opacity: 1;
+}
+
 .app-shell {
   --dynasty-accent: #6e7be8;
   --dynasty-glow: #bac5ff;
