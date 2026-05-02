@@ -60,6 +60,28 @@ const DYNASTY_LOGO_SVG: Record<Dynasty, string> = {
   wind: windLogoSvg,
 }
 
+const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; image: string }>> = {
+  fire: [
+    { name: 'Chelsea Liu', bio: 'Passionate leader who brings energy to every gathering. Known for their ability to inspire and unite the dynasty.', image: 'https://ui-avatars.com/api/?name=Feihao&background=ce7871&color=fff&size=200' },
+    { name: 'Justin Tang', bio: 'Strategic thinker with a warm heart. Dedicated to fostering deep connections within the fire dynasty community.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' },
+    { name: 'Ashlyn Zhao', bio: 'Strategic thinker with a warm heart. Dedicated to fostering deep connections within the fire dynasty community.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' }
+  ],
+  water: [
+    { name: 'Grace He', bio: 'Thoughtful and nurturing, always puts the needs of others first. Anchors the water dynasty with wisdom and compassion.', image: 'https://ui-avatars.com/api/?name=Helenzhu&background=5a8fd4&color=fff&size=200' },
+    { name: 'Jasmine Guo', bio: 'Dynamic and approachable, creates a welcoming environment for all. Bridges connections across the water dynasty beautifully.', image: 'https://ui-avatars.com/api/?name=Nataliewu&background=5a8fd4&color=fff&size=200' },
+  ],
+  earth: [
+    { name: 'Eric Dare', bio: 'Grounded and reliable, the foundation of the earth dynasty. Known for steady leadership and genuine care for members.', image: 'https://ui-avatars.com/api/?name=Audreyzhou&background=7eb56f&color=fff&size=200' },
+    { name: 'Sabrina Xu', bio: 'Visionary organizer who creates meaningful experiences. Helps the earth dynasty grow stronger through thoughtful planning.', image: 'https://ui-avatars.com/api/?name=Nicholasqiu&background=7eb56f&color=fff&size=200' },
+    { name: 'Mirabelle Jiang', bio: 'Visionary organizer who creates meaningful experiences. Helps the earth dynasty grow stronger through thoughtful planning.', image: 'https://ui-avatars.com/api/?name=Nicholasqiu&background=7eb56f&color=fff&size=200' },
+  ],
+  wind: [
+    { name: 'George Sun', bio: 'Free-spirited and inspiring, brings fresh perspectives to the wind dynasty. Encourages innovation and creative thinking.', image: 'https://ui-avatars.com/api/?name=Eileenchen&background=eec95f&color=333&size=200' },
+    { name: 'Charlie Zhang', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
+    { name: 'Daniel Wu', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
+  ],
+}
+
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase()
 }
@@ -472,6 +494,22 @@ function App() {
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
   const closeRevealTimerRef = useRef<number | null>(null)
   const closeInvitationTimerRef = useRef<number | null>(null)
+  const headsRef = useRef<HTMLElement | null>(null)
+  const treeRef = useRef<HTMLDivElement | null>(null)
+  const topHeadingRef = useRef<HTMLHeadingElement | null>(null)
+  const [isViewingHeads, setIsViewingHeads] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!headsRef.current) return
+      const headsRect = headsRef.current.getBoundingClientRect()
+      const viewportCenter = window.innerHeight / 2
+      setIsViewingHeads(headsRect.top < viewportCenter)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const formatHeadsList = (heads: string[]) => {
     if (heads.length <= 1) {
@@ -807,7 +845,7 @@ function App() {
     <main className="app-shell" style={dynastyThemeVars}>
       <header className="app-topbar">
         <div className="topbar-title-row">
-          <h1>Northwestern CSA Dynasties</h1>
+          <h1 ref={topHeadingRef}>Northwestern CSA Dynasties</h1>
           <div className="topbar-actions">
             <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
               <Mail size={20} color="#fff" />
@@ -878,13 +916,50 @@ function App() {
         </div>
       </header>
 
-      <FamilyTreeCanvas
-        dynasty={activeDynasty}
-        users={usersById}
-        highlightUserId={activeUserId}
-        searchedUserId={searchedUserId}
-        jumpRequest={jumpRequest}
-      />
+      <div ref={treeRef}>
+        <FamilyTreeCanvas
+          dynasty={activeDynasty}
+          users={usersById}
+          highlightUserId={activeUserId}
+          searchedUserId={searchedUserId}
+          jumpRequest={jumpRequest}
+        />
+      </div>
+
+      <button
+        type="button"
+        className={`scroll-to-heads-btn ${isViewingHeads ? 'viewing-heads' : ''}`}
+        style={{
+          background: `color-mix(in srgb, ${DYNASTY_STYLE[activeDynasty].accent} 82%, transparent)`,
+          color: '#fff',
+        }}
+        onClick={() => {
+          if (isViewingHeads) {
+            topHeadingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          } else {
+            headsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }}
+        aria-label={isViewingHeads ? 'Back to family trees' : `Meet the ${DYNASTY_STYLE[activeDynasty].label} heads`}
+      >
+        <span>{isViewingHeads ? 'Back to Family Trees' : `Meet the ${DYNASTY_STYLE[activeDynasty].label} Heads`}</span>
+        <span aria-hidden="true">{isViewingHeads ? '↑' : '↓'}</span>
+      </button>
+
+      <section className="dynasty-heads" ref={headsRef}>
+        <div className="dynasty-heads-container">
+          <h2>Meet the {DYNASTY_STYLE[activeDynasty].label} Heads</h2>
+          <div className="heads-grid">
+            {MOCK_DYNASTY_HEADS[activeDynasty].map((head) => (
+              <article key={head.name} className="head-card">
+                <img src={head.image} alt={head.name} className="head-image" />
+                <h3>{head.name}</h3>
+                <p>{head.bio}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {showReveal && (
         <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''} ${revealClosing ? 'is-closing' : ''}`}>
@@ -945,7 +1020,7 @@ function App() {
               <p className="invitation-line invitation-rsvp">
                 <strong>RSVP:</strong>{' '}
                 <a href={activeInvitation.rsvpLink} target="_blank" rel="noreferrer">
-                  {activeInvitation.rsvpLink}
+                  Partiful
                 </a>
               </p>
               <p className="invitation-footer">We're so excited to meet you!</p>

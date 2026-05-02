@@ -837,8 +837,8 @@
 
 .invitation-envelope {
   position: absolute;
-  width: var(--invite-paper-width);
-  height: 340px;
+  width: calc(var(--invite-paper-width) + 50px);
+  height: 420px;
   border-radius: 12px;
   background: linear-gradient(155deg, #efe7d7, #d8c6ab);
   box-shadow: 0 16px 34px rgba(17, 25, 38, 0.25);
@@ -847,7 +847,7 @@
   transform: translateX(-50%) translateY(-50%);
   z-index: 2;
   opacity: 0;
-  animation: invitationEnvelopeFade 600ms 0ms ease forwards;
+  animation: invitationEnvelopeFade 1000ms 0ms ease forwards;
 }
 
 .invitation-envelope::before {
@@ -896,7 +896,7 @@
   transform: translateX(-50%) translateY(-50%);
   opacity: 0;
   z-index: 3;
-  animation: invitationCardFade 1500ms 400ms ease forwards;
+  animation: invitationCardFade 1500ms 700ms ease forwards;
 }
 
 .invitation-overlay.invitation-settled .invitation-card {
@@ -1049,6 +1049,111 @@
     opacity: 1;
     transform: translateX(-50%) translateY(-50%);
   }
+}
+
+.scroll-to-heads-btn {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  z-index: 15;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(13, 24, 44, 0.12);
+  transition: all 300ms ease;
+  transform: translateX(-50%);
+}
+
+.scroll-to-heads-btn:hover {
+  box-shadow: 0 8px 28px rgba(13, 24, 44, 0.18);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.scroll-to-heads-btn.viewing-heads {
+  bottom: auto;
+  top: 40px;
+  transform: translateX(-50%);
+}
+
+.scroll-to-heads-btn.viewing-heads:hover {
+  transform: translateX(-50%) translateY(2px);
+}
+
+.scroll-to-heads-btn span:last-child {
+  transform: none;
+}
+
+.dynasty-heads {
+  padding: 120px 40px 80px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.02));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dynasty-heads-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dynasty-heads h2 {
+  text-align: center;
+  font-size: 2.45rem;
+  margin: 0 0 48px;
+  color: rgba(15, 27, 49, 0.9);
+  letter-spacing: 0.02em;
+}
+
+.heads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.head-card {
+  text-align: center;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 27, 49, 0.1);
+  box-shadow: 0 4px 16px rgba(13, 24, 44, 0.08);
+  transition: all 300ms ease;
+}
+
+.head-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(13, 24, 44, 0.15);
+}
+
+.head-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  border: 3px solid rgba(15, 27, 49, 0.12);
+}
+
+.head-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.3rem;
+  color: rgba(15, 27, 49, 0.95);
+}
+
+.head-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(15, 27, 49, 0.7);
 }
 
 @media (max-width: 980px) {
@@ -1305,5 +1410,49 @@
 
   .tree-viewport {
     min-height: 420px;
+  }
+
+  .scroll-to-heads-btn {
+    bottom: 20px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+
+  .scroll-to-heads-btn.viewing-heads {
+    top: 20px;
+    bottom: auto;
+  }
+
+  .dynasty-heads {
+    padding: 60px 20px;
+  }
+
+  .dynasty-heads h2 {
+    font-size: 1.5rem;
+    margin-bottom: 32px;
+  }
+
+  .heads-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .head-card {
+    padding: 16px;
+  }
+
+  .head-image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 16px;
+  }
+
+  .head-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .head-card p {
+    font-size: 0.9rem;
   }
 }
