@@ -62,8 +62,8 @@ const DYNASTY_LOGO_SVG: Record<Dynasty, string> = {
 
 const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; image: string }>> = {
   fire: [
-    { name: 'Chelsea Liu', bio: 'Passionate leader who brings energy to every gathering. Known for their ability to inspire and unite the dynasty.', image: 'https://ui-avatars.com/api/?name=Feihao&background=ce7871&color=fff&size=200' },
-    { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a freshman studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: 'https://ui-avatars.com/api/?name=Josiechou&background=ce7871&color=fff&size=200' },
+    { name: 'Chelsea Liu', bio: 'Hi! I’m Chelsea and I’m a junior studying data science and I’m from Seattle, WA! I love watching baseball and trying to discover the few good matcha places chicago has.', image: new URL('./assets/heads-profiles/chelsea.jpg', import.meta.url).href },
+    { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a freshman studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: new URL('./assets/heads-profiles/justin.jpg', import.meta.url).href },
     { name: 'Ashlyn Zhao', bio: 'im ashlyn zhao and im from san diego california, studying data science and econ as a first year. i lovelovelove baking and going swimming w friends and cafe hopping !!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
   ],
   water: [
@@ -77,7 +77,7 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
   ],
   wind: [
     { name: 'George Sun', bio: 'Hi guys I’m george! I’m a sophomore from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
-    { name: 'Charlie Zhang', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
+    { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
     { name: 'Daniel Wu', bio: 'Adventurous and inclusive leader who celebrates diversity. Keeps the wind dynasty energized and connected.', image: 'https://ui-avatars.com/api/?name=Davidxia&background=eec95f&color=333&size=200' },
   ],
 }
@@ -110,8 +110,8 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
 
   const roots = [...members].filter((id) => !parentByChild.has(id))
   const seen = new Set<string>()
-  const nodeWidth = 124
-  const nodeHeight = 60
+  // Previously node sizes were fixed. Measure per-node size based on the email prefix
+  // so nodes can grow/shrink with their content and wrap when needed.
   const siblingGap = 34
   const levelGap = 132
   const panelGap = 34
@@ -120,6 +120,43 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
   const panelPaddingBottom = 18
   const subtreeWidthCache = new Map<string, number>()
   const subtreeDepthCache = new Map<string, number>()
+  const nodeWidthCache = new Map<string, number>()
+  const nodeHeightCache = new Map<string, number>()
+
+  // measurement helpers (uses canvas 2D to measure text width with the page font)
+  const canvas = typeof document !== 'undefined' ? document.createElement('canvas') : null
+  const ctx = canvas ? canvas.getContext('2d') : null
+  const rootFontSize = typeof document !== 'undefined' ? parseFloat(getComputedStyle(document.documentElement).fontSize || '16') : 16
+  const titleFontRem = 0.84 // .tree-node h3 { font-size: 0.84rem }
+  const titleFontPx = rootFontSize * titleFontRem
+  // measure using the same UI font used in the nodes
+  const titleFont = `${Math.round(titleFontPx)}px Manrope, sans-serif`
+  const paddingX = 24 // .tree-node padding 12px left+right
+  const paddingY = 24 // 12px top+bottom
+  const minNodeWidth = 100
+  const maxNodeWidth = 160
+  const minNodeHeight = 56
+
+  const measureTextWidth = (text: string) => {
+    if (!ctx) return Math.min(maxNodeWidth - paddingX, Math.max(40, text.length * 7))
+    ctx.font = titleFont
+    return Math.ceil(ctx.measureText(text).width)
+  }
+
+  const computeNodeSize = (id: string) => {
+    if (nodeWidthCache.has(id) && nodeHeightCache.has(id)) {
+      return { w: nodeWidthCache.get(id)!, h: nodeHeightCache.get(id)! }
+    }
+    const label = (users[id]?.email ?? '').split('@')[0] || ''
+    const textWidth = measureTextWidth(label)
+    // do NOT force wrapping here — make the node wide enough to contain the text
+    const w = Math.max(minNodeWidth, Math.ceil(textWidth + paddingX))
+    const lineHeight = Math.round(titleFontPx * 1.2)
+    const h = Math.max(minNodeHeight, lineHeight + paddingY)
+    nodeWidthCache.set(id, w)
+    nodeHeightCache.set(id, h)
+    return { w, h }
+  }
 
   const getChildren = (id: string) => (users[id]?.littles ?? []).filter((littleId) => members.has(littleId))
 
@@ -131,13 +168,15 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
 
     const children = getChildren(id)
     if (children.length === 0) {
-      subtreeWidthCache.set(id, nodeWidth)
-      return nodeWidth
+      const { w } = computeNodeSize(id)
+      subtreeWidthCache.set(id, w)
+      return w
     }
 
     const childWidths = children.map((childId) => measureWidth(childId))
     const totalChildrenWidth = childWidths.reduce((sum, value) => sum + value, 0) + siblingGap * (children.length - 1)
-    const measured = Math.max(nodeWidth, totalChildrenWidth)
+    const { w: myW } = computeNodeSize(id)
+    const measured = Math.max(myW, totalChildrenWidth)
     subtreeWidthCache.set(id, measured)
     return measured
   }
@@ -167,8 +206,9 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
     connectors: Array<{ from: Point; to: Point }>,
   ) => {
     const subtreeWidth = measureWidth(id)
+    const { h: myH } = computeNodeSize(id)
     const x = left + subtreeWidth / 2
-    const y = panelPaddingTop + nodeHeight / 2 + depth * levelGap
+    const y = panelPaddingTop + myH / 2 + depth * levelGap
     positions[id] = { x, y }
 
     const children = getChildren(id)
@@ -202,7 +242,12 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
     placeNode(rootId, panelPaddingX, 0, positions, connectors)
 
     const width = measureWidth(rootId) + panelPaddingX * 2
-    const height = measureDepth(rootId) * levelGap + nodeHeight + panelPaddingTop + panelPaddingBottom
+
+    // Compute height from positioned nodes so varying node heights are respected
+    const allYs = Object.values(positions).map((p) => p.y)
+    const maxCenterY = Math.max(...allYs)
+    const maxNodeHalf = Math.max(...Object.keys(positions).map((id) => (nodeHeightCache.get(id) ?? minNodeHeight) / 2))
+    const height = Math.max((maxCenterY + maxNodeHalf) + panelPaddingBottom, measureDepth(rootId) * levelGap + minNodeHeight + panelPaddingTop + panelPaddingBottom)
 
     drafts.push({ rootId, positions, connectors, width, height })
 
