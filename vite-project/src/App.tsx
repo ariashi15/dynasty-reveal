@@ -540,8 +540,10 @@ function App() {
   const [searchedUserId, setSearchedUserId] = useState('')
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
   const [isBrowsingMode, setIsBrowsingMode] = useState(false)
+  const [revealHeadIndex, setRevealHeadIndex] = useState(0)
   const closeRevealTimerRef = useRef<number | null>(null)
   const closeInvitationTimerRef = useRef<number | null>(null)
+  const jumpRequestTokenRef = useRef(0)
   const headsRef = useRef<HTMLElement | null>(null)
   const treeRef = useRef<HTMLDivElement | null>(null)
   const topHeadingRef = useRef<HTMLHeadingElement | null>(null)
@@ -635,11 +637,6 @@ function App() {
     if (!showReveal) {
       return
     }
-
-    setRevealClosing(false)
-    setRevealDone(false)
-    setShowCloseButton(false)
-    setRevealPhase('loading')
 
     const introTimer = window.setTimeout(() => {
       setRevealPhase('intro')
@@ -738,7 +735,8 @@ function App() {
 
     setActiveDynasty(match.dynasty)
     setSearchedUserId(id)
-    setJumpRequest({ id, token: Date.now() })
+    jumpRequestTokenRef.current += 1
+    setJumpRequest({ id, token: jumpRequestTokenRef.current })
   }
 
   const selectSearchSuggestion = (id: string) => {
@@ -801,6 +799,7 @@ function App() {
     setShowInvitationPopup(false)
     setInvitationClosing(false)
     setActiveDynasty('fire')
+    setRevealHeadIndex(0)
     setEmailInput('')
     setFormError('')
   }
@@ -827,6 +826,11 @@ function App() {
     setFormError('')
     setActiveUserId(found[0])
     setActiveDynasty(found[1].dynasty)
+    setRevealHeadIndex(0)
+    setRevealClosing(false)
+    setRevealDone(false)
+    setShowCloseButton(false)
+    setRevealPhase('loading')
     setShowInvitationPopup(false)
     setInvitationClosing(false)
     setShowReveal(true)
@@ -1065,6 +1069,43 @@ function App() {
                       <p>{head.bio}</p>
                     </div>
                   ))}
+                </div>
+                <div className="reveal-heads-carousel" aria-label={`${DYNASTY_STYLE[activeUser.dynasty].label} heads carousel`}>
+                  <button
+                    type="button"
+                    className="reveal-head-carousel-arrow"
+                    onClick={() => {
+                      const heads = MOCK_DYNASTY_HEADS[activeUser.dynasty]
+                      setRevealHeadIndex((currentIndex) => (currentIndex - 1 + heads.length) % heads.length)
+                    }}
+                    aria-label="Previous head"
+                  >
+                    ‹
+                  </button>
+                  <div className="reveal-head-carousel-window">
+                    {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
+                      <article
+                        key={head.name}
+                        className={`head-card reveal-head-carousel-card ${idx === revealHeadIndex ? 'is-active' : ''}`}
+                        aria-hidden={idx !== revealHeadIndex}
+                      >
+                        <img src={head.image} alt={head.name} className="head-image" />
+                        <h3>{head.name}</h3>
+                        <p>{head.bio}</p>
+                      </article>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="reveal-head-carousel-arrow"
+                    onClick={() => {
+                      const heads = MOCK_DYNASTY_HEADS[activeUser.dynasty]
+                      setRevealHeadIndex((currentIndex) => (currentIndex + 1) % heads.length)
+                    }}
+                    aria-label="Next head"
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
             )}
