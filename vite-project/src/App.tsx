@@ -78,7 +78,7 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
   wind: [
     { name: 'George Sun', bio: 'Hi guys I’m george! I’m a sophomore from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
     { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: new URL('./assets/heads-profiles/charlie.jpg', import.meta.url).href },
-    { name: 'Daniel Wu', bio: 'Daniel has not written a bio yet everybody pls tell him to text me back -Aria', image: new URL('./assets/heads-profiles/daniel.jpg', import.meta.url).href },
+    { name: 'Daniel Wu', bio: 'Hi I’m Daniel, Im a freshman from Beijing and Vancouver and I study mmss psych maybe history. I like soccer, skiing, eating food, and labradors.', image: new URL('./assets/heads-profiles/daniel.jpg', import.meta.url).href },
   ],
 }
 
