@@ -71,7 +71,7 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
     { name: 'Jasmine Guo', bio: 'HI EVERYONE IM JASMINE AND IM A JUNIOR FROM NEW YORK STUDYING BIOLOGY. I LIKE TO DANCE AND EAT AND WANT A PET SNAKE!', image: new URL('./assets/heads-profiles/jasmine.jpg', import.meta.url).href },
   ],
   earth: [
-    { name: 'Eric Dare', bio: 'HI EVERYONE MY NAME IS ERIC AND IM FROM THE BIG GE IN IL. I STUDY BIO AND I LIKE TO KICK PEOPLE (taekwondo)', image: new URL('./assets/heads-profiles/eric.jpg', import.meta.url).href },
+    { name: 'Eric Dare', bio: 'Hi everyone! My name is Eric Dare and I am a 3rd year at Northwestern from Glen Ellyn, IL. I’m currently studying Biological Sciences and I want to pursue medicine. In my free time I practice Taekwondo and I eat a bunchhh of food.', image: new URL('./assets/heads-profiles/eric.jpg', import.meta.url).href },
     { name: 'Sabrina Xu', bio: 'Hiii I’m Sabrina, a freshman from the best borough of all: Queens, NY, and I’m studying Biology and Global Health. Turtles are the best animals in the world 🐢🐢', image: new URL('./assets/heads-profiles/sabrina.jpg', import.meta.url).href },
     { name: 'Mirabelle Jiang', bio: 'Hi I’m Mirabelle! Im a freshman from the land of abgs aka irvine, ca studying Econ & English. I like to eat sleep drive cars and scroll reels.', image: new URL('./assets/heads-profiles/mirabelle.jpg', import.meta.url).href },
   ],
