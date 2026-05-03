@@ -819,7 +819,7 @@ function App() {
     const found = Object.entries(usersById).find(([, user]) => normalizeEmail(user.email) === normalized)
 
     if (!found) {
-      setFormError("We can't find you in our database! Email csa@u.northwestern.edu if this is a mistake.")
+      setFormError("We can't find you in our database! Fill out this form to be added: https://forms.gle/ok6DBociHY2CZrRr9")
       return
     }
 
