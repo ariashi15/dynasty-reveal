@@ -892,6 +892,13 @@
       "email": "brianhan2028@u.northwestern.edu",
       "name": "brianhan2028",
       "dynasty": "earth",
+      "littles": ["michellelee2029"],
+      "head": false
+    },
+    "michellelee2029": {
+      "email": "michellelee2029@u.northwestern.edu",
+      "name": "michellelee2029",
+      "dynasty": "earth",
       "littles": [],
       "head": false
     },
@@ -1123,6 +1130,13 @@
     "kaitlynchen2028": {
       "email": "kaitlynchen2028@u.northwestern.edu",
       "name": "kaitlynchen2028",
+      "dynasty": "fire",
+      "littles": ["stanleywan2029"],
+      "head": false
+    },
+    "stanleywan2029": {
+      "email": "stanleywan2029@u.northwestern.edu",
+      "name": "stanleywan2029",
       "dynasty": "fire",
       "littles": [],
       "head": false
@@ -2510,9 +2524,30 @@
       "littles": [],
       "head": false
     },
-    "v4i4a6": {
-      "email": "v4i4a6@u.northwestern.eduu",
-      "name": "v4i4a6",
+    "laurachen2028": {
+      "email": "laurachen2028@u.northwestern.eduu",
+      "name": "laurachen2028",
+      "dynasty": "earth",
+      "littles": [],
+      "head": false
+    },
+    "tonyge2028": {
+      "email": "tonyge2028@u.northwestern.eduu",
+      "name": "tonyge2028",
+      "dynasty": "wind",
+      "littles": [],
+      "head": false
+    },
+    "mingyuanwang2027": {
+      "email": "mingyuanwang2027@u.northwestern.eduu",
+      "name": "mingyuanwang2027",
+      "dynasty": "earth",
+      "littles": [],
+      "head": false
+    },
+    "brennali2029": {
+      "email": "brennali2029@u.northwestern.eduu",
+      "name": "brennali2029",
       "dynasty": "earth",
       "littles": [],
       "head": false
