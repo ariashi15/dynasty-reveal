@@ -642,7 +642,8 @@
       "dynasty": "fire",
       "littles": [
         "alexding2028",
-        "justincharo2028"
+        "justincharo2028",
+        "jennajeon2027"
       ],
       "head": true
     },
@@ -2499,6 +2500,13 @@
     "cassiesong2029": {
       "email": "cassiesong2029@u.northwestern.edu",
       "name": "cassiesong2029",
+      "dynasty": "fire",
+      "littles": [],
+      "head": false
+    },
+    "jennajeon2027": {
+      "email": "jennajeon2027@u.northwestern.edu",
+      "name": "jennajeon2027",
       "dynasty": "fire",
       "littles": [],
       "head": false
