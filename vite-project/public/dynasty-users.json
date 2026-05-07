@@ -180,6 +180,27 @@
       "email": "justincharo2028@u.northwestern.edu",
       "name": "justincharo2028",
       "dynasty": "fire",
+      "littles": ["owenlee2029", "aimeexiong2029", "georgedeng2028"],
+      "head": false
+    },
+    "owenlee2029": {
+      "email": "owenlee2029@u.northwestern.edu",
+      "name": "owenlee2029",
+      "dynasty": "fire",
+      "littles": [],
+      "head": false
+    },
+    "aimeexiong2029": {
+      "email": "aimeexiong2029@u.northwestern.edu",
+      "name": "aimeexiong2029",
+      "dynasty": "fire",
+      "littles": [],
+      "head": false
+    },
+    "georgedeng2028": {
+      "email": "georgedeng2028@u.northwestern.edu",
+      "name": "georgedeng2028",
+      "dynasty": "fire",
       "littles": [],
       "head": false
     },
