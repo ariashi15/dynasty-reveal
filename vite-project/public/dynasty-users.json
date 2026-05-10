@@ -1193,6 +1193,20 @@
       "email": "ylangguo2027@u.northwestern.edu",
       "name": "ylangguo2027",
       "dynasty": "wind",
+      "littles": ["amyhuang2028", "jessicagao2029"],
+      "head": false
+    },
+    "amyhuang2028": {
+      "email": "amyhuang2028@u.northwestern.edu",
+      "name": "amyhuang2028",
+      "dynasty": "wind",
+      "littles": [],
+      "head": false
+    },
+    "jessicagao2029": {
+      "email": "jessicagao2029@u.northwestern.edu",
+      "name": "jessicagao2029",
+      "dynasty": "wind",
       "littles": [],
       "head": false
     },
@@ -1552,9 +1566,17 @@
       "name": "jasmineguo2027",
       "dynasty": "water",
       "littles": [
-        "shin-yiwang2028"
+        "shin-yiwang2028",
+        "violetliu2028"
       ],
       "head": true
+    },
+    "violetliu2028": {
+      "email": "violetliu2028@u.northwestern.edu",
+      "name": "violetliu2028",
+      "dynasty": "water",
+      "littles": [],
+      "head": false
     },
     "rachelwang2026": {
       "email": "rachelwang2026@u.northwestern.edu",
