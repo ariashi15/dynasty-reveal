@@ -2610,4 +2610,19 @@
       "littles": [],
       "head": false
     },
-    
+    "justineliu2027": {
+      "email": "justineliu2027@u.northwestern.edu",
+      "name": "justineliu2027",
+      "dynasty": "wind",
+      "littles": ["elenahu2028"],
+      "head": false
+    },
+    "elenahu2028": {
+      "email": "elenahu2028@u.northwestern.edu",
+      "name": "elenahu2028",
+      "dynasty": "wind",
+      "littles": [],
+      "head": false
+    }
+  }
+}
