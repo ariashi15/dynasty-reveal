@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { Mail } from 'lucide-react'
 import './App.css'
 import fireLogoSvg from './assets/dynasty-logos/firelogo-white.svg'
 import waterLogoSvg from './assets/dynasty-logos/waterlogo-white.svg'
@@ -18,18 +17,6 @@ type UserNode = {
 
 type UsersPayload = {
   users: Record<string, UserNode>
-}
-
-type InvitationInfo = {
-  name: string
-  date: string
-  location: string
-  rsvpLink: string
-  heads: string[]
-}
-
-type InvitationsPayload = {
-  invitations: Record<Dynasty, InvitationInfo>
 }
 
 type Point = {
@@ -80,10 +67,6 @@ const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; ima
     { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: new URL('./assets/heads-profiles/charlie.jpg', import.meta.url).href },
     { name: 'Daniel Wu', bio: 'Hi I’m Daniel, Im a freshman from Beijing and Vancouver and I study mmss psych maybe history. I like soccer, skiing, eating food, and labradors.', image: new URL('./assets/heads-profiles/daniel.jpg', import.meta.url).href },
   ],
-}
-
-function normalizeEmail(value: string) {
-  return value.trim().toLowerCase()
 }
 
 function getDynastyMembers(users: Record<string, UserNode>, dynasty: Dynasty) {
@@ -520,29 +503,13 @@ function FamilyTreeCanvas({
 
 function App() {
   const [usersById, setUsersById] = useState<Record<string, UserNode>>({})
-  const [invitationsByDynasty, setInvitationsByDynasty] = useState<Partial<Record<Dynasty, InvitationInfo>>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [emailInput, setEmailInput] = useState('')
-  const [formError, setFormError] = useState('')
-  const [activeUserId, setActiveUserId] = useState('')
   const [activeDynasty, setActiveDynasty] = useState<Dynasty>('fire')
-  const [showReveal, setShowReveal] = useState(false)
-  const [revealClosing, setRevealClosing] = useState(false)
-  const [revealDone, setRevealDone] = useState(false)
-  const [showCloseButton, setShowCloseButton] = useState(false)
-  const [revealPhase, setRevealPhase] = useState<'loading' | 'intro' | 'name' | 'heads'>('loading')
-  const [showInvitationPopup, setShowInvitationPopup] = useState(false)
-  const [invitationClosing, setInvitationClosing] = useState(false)
-  const [invitationSettled, setInvitationSettled] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [searchFocus, setSearchFocus] = useState(false)
   const [searchedUserId, setSearchedUserId] = useState('')
   const [jumpRequest, setJumpRequest] = useState<{ id: string; token: number } | null>(null)
-  const [isBrowsingMode, setIsBrowsingMode] = useState(false)
-  const [revealHeadIndex, setRevealHeadIndex] = useState(0)
-  const closeRevealTimerRef = useRef<number | null>(null)
-  const closeInvitationTimerRef = useRef<number | null>(null)
   const jumpRequestTokenRef = useRef(0)
   const headsRef = useRef<HTMLElement | null>(null)
   const treeRef = useRef<HTMLDivElement | null>(null)
@@ -560,18 +527,6 @@ function App() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const formatHeadsList = (heads: string[]) => {
-    if (heads.length <= 1) {
-      return heads[0] ?? ''
-    }
-
-    if (heads.length === 2) {
-      return `${heads[0]} and ${heads[1]}`
-    }
-
-    return `${heads.slice(0, -1).join(', ')}, and ${heads[heads.length - 1]}`
-  }
 
   useEffect(() => {
     let ignore = false
@@ -606,99 +561,11 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    let ignore = false
-
-    const loadInvitations = async () => {
-      try {
-        const response = await fetch('/dynasty-invitations.json')
-        if (!response.ok) {
-          throw new Error(`Failed to load invitation data: ${response.status}`)
-        }
-        const data = (await response.json()) as InvitationsPayload
-        if (!ignore) {
-          setInvitationsByDynasty(data.invitations ?? {})
-        }
-      } catch {
-        if (!ignore) {
-          setInvitationsByDynasty({})
-        }
-      }
-    }
-
-    loadInvitations()
-
-    return () => {
-      ignore = true
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!showReveal) {
-      return
-    }
-
-    const introTimer = window.setTimeout(() => {
-      setRevealPhase('intro')
-    }, 1650)
-
-    const nameTimer = window.setTimeout(() => {
-      setRevealPhase('name')
-    }, 3000)
-
-    const closeTimer = window.setTimeout(() => {
-      setShowCloseButton(true)
-    }, 4900)
-
-    const doneTimer = window.setTimeout(() => {
-      setRevealDone(true)
-    }, 5750)
-
-    return () => {
-      window.clearTimeout(introTimer)
-      window.clearTimeout(nameTimer)
-      window.clearTimeout(closeTimer)
-      window.clearTimeout(doneTimer)
-    }
-  }, [showReveal])
-
-  useEffect(() => {
-    return () => {
-      if (closeRevealTimerRef.current !== null) {
-        window.clearTimeout(closeRevealTimerRef.current)
-      }
-      if (closeInvitationTimerRef.current !== null) {
-        window.clearTimeout(closeInvitationTimerRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (activeUserId && usersById[activeUserId]) {
-      // Auto-center on the user when they arrive on the tree
-      window.setTimeout(() => {
-        const match = Object.entries(usersById).find(([id]) => id === activeUserId)
-        if (match) {
-          setActiveDynasty(usersById[activeUserId].dynasty)
-          setSearchedUserId(activeUserId)
-          setJumpRequest({ id: activeUserId, token: Date.now() })
-        }
-      }, 100)
-    }
-  }, [activeUserId, usersById])
-
-  const activeUser = activeUserId ? usersById[activeUserId] : undefined
-  const activeInvitation = activeUser ? invitationsByDynasty[activeUser.dynasty] : undefined
   const activeTheme = DYNASTY_STYLE[activeDynasty]
-  const assignedTheme = activeUser ? DYNASTY_STYLE[activeUser.dynasty] : activeTheme
   const activeDynastyIndex = Math.max(0, DYNASTIES.indexOf(activeDynasty))
   const dynastyThemeVars = {
     ['--dynasty-accent' as string]: activeTheme.accent,
     ['--dynasty-glow' as string]: activeTheme.glow,
-  } as CSSProperties
-  const badgeThemeVars = {
-    ['--badge-accent' as string]: assignedTheme.accent,
-    ['--badge-glow' as string]: assignedTheme.glow,
   } as CSSProperties
 
   const searchableUsers = useMemo(
@@ -780,152 +647,14 @@ function App() {
     return () => window.clearTimeout(timer)
   }, [searchedUserId])
 
-  const returnToLogin = () => {
-    if (closeRevealTimerRef.current !== null) {
-      window.clearTimeout(closeRevealTimerRef.current)
-      closeRevealTimerRef.current = null
-    }
-    if (closeInvitationTimerRef.current !== null) {
-      window.clearTimeout(closeInvitationTimerRef.current)
-      closeInvitationTimerRef.current = null
-    }
-    setActiveUserId('')
-    setIsBrowsingMode(false)
-    setRevealClosing(false)
-    setShowReveal(false)
-    setRevealDone(false)
-    setShowCloseButton(false)
-    setRevealPhase('loading')
-    setShowInvitationPopup(false)
-    setInvitationClosing(false)
-    setActiveDynasty('fire')
-    setRevealHeadIndex(0)
-    setEmailInput('')
-    setFormError('')
-  }
-
-  const handleBrowsingMode = () => {
-    setIsBrowsingMode(true)
-  }
-
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const normalized = normalizeEmail(emailInput)
-    if (!normalized) {
-      setFormError('Please enter an email.')
-      return
-    }
-
-    const found = Object.entries(usersById).find(([, user]) => normalizeEmail(user.email) === normalized)
-
-    if (!found) {
-      setFormError("We can't find you in our database! Fill out this form to be added: https://forms.gle/ok6DBociHY2CZrRr9")
-      return
-    }
-
-    setFormError('')
-    setActiveUserId(found[0])
-    setActiveDynasty(found[1].dynasty)
-    setRevealHeadIndex(0)
-    setRevealClosing(false)
-    setRevealDone(false)
-    setShowCloseButton(false)
-    setRevealPhase('loading')
-    setShowInvitationPopup(false)
-    setInvitationClosing(false)
-    setShowReveal(true)
-  }
-
-  const closeReveal = () => {
-    if (revealClosing) {
-      return
-    }
-
-    setRevealClosing(true)
-    closeRevealTimerRef.current = window.setTimeout(() => {
-      setShowReveal(false)
-      setRevealClosing(false)
-      setShowInvitationPopup(true)
-      setInvitationClosing(false)
-      setInvitationSettled(false)
-      window.setTimeout(() => setInvitationSettled(true), 820)
-      closeRevealTimerRef.current = null
-    }, 420)
-  }
-
-  const closeInvitationPopup = () => {
-    if (invitationClosing) {
-      return
-    }
-
-    setInvitationClosing(true)
-    closeInvitationTimerRef.current = window.setTimeout(() => {
-      setShowInvitationPopup(false)
-      setInvitationClosing(false)
-      setInvitationSettled(false)
-      closeInvitationTimerRef.current = null
-    }, 320)
-  }
-
-  if (!activeUser && !isBrowsingMode) {
-    return (
-      <main className="login-screen">
-        <section className="login-panel">
-          <p className="eyebrow">CSA Spring 2026 Dynasty Reveal</p>
-
-          <form onSubmit={handleLogin} className="login-form">
-            <label htmlFor="email">Enter your Northwestern email:</label>
-            <div className="login-entry-row">
-              <input
-                id="email"
-                type="email"
-                placeholder="you@u.northwestern.edu"
-                value={emailInput}
-                onChange={(event) => setEmailInput(event.target.value)}
-              />
-              <button type="submit" className="login-arrow-btn" disabled={isLoading} aria-label="Submit email">
-                {isLoading ? '...' : '->'}
-              </button>
-            </div>
-          </form>
-
-          {loadError && <p className="error-text">{loadError}</p>}
-          {!loadError && formError && <p className="error-text">{formError}</p>}
-
-          <button
-            type="button"
-            className="browsing-mode-btn"
-            onClick={handleBrowsingMode}
-            aria-label="Browse family tree without logging in"
-          >
-            <b>Not logging in, just browsing <span aria-hidden="true">-&gt;</span></b>
-          </button>
-
-          {/* <p className="examples">Try: ember@example.com, sora@example.com, marin@example.com, terra@example.com</p> */}
-        </section>
-      </main>
-    )
-  }
-
   return (
     <main className="app-shell" style={dynastyThemeVars}>
       <header className="app-topbar">
         <div className="topbar-title-row">
-          <h1 ref={topHeadingRef}>Northwestern CSA Dynasties</h1>
-          <div className="topbar-actions">
-            {!isBrowsingMode && activeUser && (
-              <div className="mail-and-name-badge">
-                <button type="button" className="mail-icon-btn" style={badgeThemeVars} onClick={() => { setShowInvitationPopup(true); setInvitationClosing(false); setInvitationSettled(false); }} aria-label="View invitation">
-                  <Mail size={20} color="#fff" />
-                </button>
-                <div className="identity-chip" style={badgeThemeVars} aria-label="Current dynasty assignment">
-                  <strong>{activeUser.name}: {DYNASTY_STYLE[activeUser.dynasty].label} Dynasty</strong>
-                </div>
-              </div>
-            )}
-            <button type="button" className="return-login-btn" onClick={returnToLogin}>
-              Return to Login
-            </button>
+          <h1 ref={topHeadingRef}>Northwestern CSA Family Trees</h1>
+          <div>
+            {isLoading ? <p className="support-copy">Loading family tree data...</p> : null}
+            {!isLoading && loadError ? <p className="error-text">{loadError}</p> : null}
           </div>
         </div>
 
@@ -990,7 +719,7 @@ function App() {
         <FamilyTreeCanvas
           dynasty={activeDynasty}
           users={usersById}
-          highlightUserId={activeUserId}
+          highlightUserId=""
           searchedUserId={searchedUserId}
           jumpRequest={jumpRequest}
         />
@@ -1030,130 +759,6 @@ function App() {
           </div>
         </div>
       </section>
-
-      {!isBrowsingMode && showReveal && activeUser && (
-        <section className={`reveal-overlay reveal-phase-${revealPhase} reveal-${activeUser.dynasty} ${revealDone ? 'done' : ''} ${revealClosing ? 'is-closing' : ''}`}>
-          <div className="reveal-rings" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="reveal-stripes" aria-hidden="true">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <i key={index} style={{ animationDelay: `${index * 0.13}s` }} />
-            ))}
-          </div>
-          <div className={`reveal-copy phase-${revealPhase}`}>
-            <div className={`reveal-intro ${revealPhase !== 'loading' ? 'is-visible' : ''}`}>
-              <p>{activeUser.name}, you're in...</p>
-            </div>
-            {revealPhase === 'loading' ? (
-              <div className="loading-orb" aria-hidden="true" />
-            ) : revealPhase === 'intro' ? (
-              <div className="reveal-hold" aria-hidden="true" />
-            ) : revealPhase === 'name' ? (
-              <div className="reveal-message">
-                <h2 className="dynasty-name-enter">
-                  <span>{DYNASTY_STYLE[activeUser.dynasty].label}</span>
-                  <span>Dynasty</span>
-                </h2>
-              </div>
-            ) : (
-              <div className="reveal-heads-content">
-                <h2>Your dynasty heads are...</h2>
-                <div className="reveal-heads-grid">
-                  {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
-                    <div key={idx} className="head-card">
-                      <img src={head.image} alt={head.name} className="head-image" />
-                      <h3>{head.name}</h3>
-                      <p>{head.bio}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="reveal-heads-carousel" aria-label={`${DYNASTY_STYLE[activeUser.dynasty].label} heads carousel`}>
-                  <button
-                    type="button"
-                    className="reveal-head-carousel-arrow"
-                    onClick={() => {
-                      const heads = MOCK_DYNASTY_HEADS[activeUser.dynasty]
-                      setRevealHeadIndex((currentIndex) => (currentIndex - 1 + heads.length) % heads.length)
-                    }}
-                    aria-label="Previous head"
-                  >
-                    ‹
-                  </button>
-                  <div className="reveal-head-carousel-window">
-                    <div className="reveal-head-carousel-track" style={{ transform: `translateX(-${revealHeadIndex * 100}%)` }}>
-                      {MOCK_DYNASTY_HEADS[activeUser.dynasty].map((head, idx) => (
-                        <article
-                          key={head.name}
-                          className="head-card reveal-head-carousel-card"
-                          aria-hidden={idx !== revealHeadIndex}
-                        >
-                          <img src={head.image} alt={head.name} className="head-image" />
-                          <h3>{head.name}</h3>
-                          <p>{head.bio}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="reveal-head-carousel-arrow"
-                    onClick={() => {
-                      const heads = MOCK_DYNASTY_HEADS[activeUser.dynasty]
-                      setRevealHeadIndex((currentIndex) => (currentIndex + 1) % heads.length)
-                    }}
-                    aria-label="Next head"
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
-            )}
-            <div className="reveal-actions">
-              {showCloseButton ? (
-                <button type="button" className={`reveal-close-btn ${revealDone ? 'is-visible' : ''}`} onClick={() => revealPhase === 'heads' ? closeReveal() : setRevealPhase('heads')}>
-                  {revealPhase === 'heads' ? 'Continue' : 'Continue'}
-                </button>
-              ) : (
-                <span aria-hidden="true" />
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {!isBrowsingMode && showInvitationPopup && activeUser && activeInvitation ? (
-        <section className={`invitation-overlay ${invitationClosing ? 'is-closing' : ''} ${invitationSettled ? 'invitation-settled' : ''}`}>
-          <div className="invitation-popup" role="dialog" aria-modal="true" aria-label="Dynasty invitation">
-            <div className="invitation-envelope" aria-hidden="true">
-              <span className="invitation-envelope-flap" />
-              <span className="invitation-envelope-seal" />
-            </div>
-            <article className="invitation-card">
-              <button type="button" className="invitation-close-btn" onClick={closeInvitationPopup} aria-label="Close invitation">
-                ×
-              </button>
-              <p className="invitation-line invitation-intro">You're invited to...</p>
-              <h2>{activeInvitation.name}</h2>
-              <p className="invitation-line"><strong>Date:</strong> {activeInvitation.date}</p>
-              <p className="invitation-line"><strong>Location:</strong> {activeInvitation.location}</p>
-              <p className="invitation-line invitation-rsvp">
-                <strong>RSVP:</strong>{' '}
-                <a href={activeInvitation.rsvpLink} target="_blank" rel="noreferrer">
-                  Partiful
-                </a>
-              </p>
-              <p className="invitation-footer">WE'RE SO EXCITED TO MEET YOU!!!!</p>
-              <p className="invitation-signoff">
-                Your {DYNASTY_STYLE[activeUser.dynasty].label.toLowerCase()} heads,<br></br>
-                {formatHeadsList(activeInvitation.heads)}
-              </p>
-            </article>
-          </div>
-        </section>
-      ) : null}
     </main>
   )
 }
