@@ -1,4 +1,25 @@
-# React + TypeScript + Vite
+# Northwestern CSA Family Trees
+
+## Local setup
+
+Create `.env.local` from `.env.example`. The value must be the API origin without `/api` or a trailing slash:
+
+```env
+VITE_API_URL=https://family-tree-cms-api.vercel.app
+```
+
+Run the app with Node 20:
+
+```bash
+npm install
+npm run dev
+```
+
+The development server runs at `http://localhost:4173/dynasties`.
+
+The API must include the client's exact origin in its `CORS_ORIGIN` environment variable. For local development that is `http://localhost:4173`. Add the deployed frontend origin as a comma-separated HTTPS origin, then redeploy the API.
+
+## Vite template notes
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

@@ -4,20 +4,8 @@ import fireLogoSvg from './assets/dynasty-logos/firelogo-white.svg'
 import waterLogoSvg from './assets/dynasty-logos/waterlogo-white.svg'
 import earthLogoSvg from './assets/dynasty-logos/earthlogo-white.svg'
 import windLogoSvg from './assets/dynasty-logos/windlogo-white.svg'
-
-type Dynasty = 'fire' | 'water' | 'earth' | 'wind'
-
-type UserNode = {
-  email: string
-  name: string
-  dynasty: Dynasty
-  littles: string[]
-  head?: boolean
-}
-
-type UsersPayload = {
-  users: Record<string, UserNode>
-}
+import { fetchMembers, type Dynasty } from './api/members'
+import { membersToTreeData, type UserNode } from './data/memberTree'
 
 type Point = {
   x: number
@@ -130,7 +118,7 @@ function buildFamilyGroups(users: Record<string, UserNode>, dynasty: Dynasty) {
     if (nodeWidthCache.has(id) && nodeHeightCache.has(id)) {
       return { w: nodeWidthCache.get(id)!, h: nodeHeightCache.get(id)! }
     }
-    const label = (users[id]?.email ?? '').split('@')[0] || ''
+    const label = users[id]?.name ?? ''
     const textWidth = measureTextWidth(label)
     // do NOT force wrapping here — make the node wide enough to contain the text
     const w = Math.max(minNodeWidth, Math.ceil(textWidth + paddingX))
@@ -489,7 +477,7 @@ function FamilyTreeCanvas({
                       </span>
                     ) : null}
                     {isHighlighted ? <span className="tree-node-badge">You</span> : null}
-                    <h3>{user.email.split('@')[0]}</h3>
+                    <h3>{user.name}</h3>
                   </article>
                 )
               })}
@@ -505,6 +493,7 @@ function App() {
   const [usersById, setUsersById] = useState<Record<string, UserNode>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
+  const [loadAttempt, setLoadAttempt] = useState(0)
   const [activeDynasty, setActiveDynasty] = useState<Dynasty>('fire')
   const [searchInput, setSearchInput] = useState('')
   const [searchFocus, setSearchFocus] = useState(false)
@@ -529,26 +518,24 @@ function App() {
   }, [])
 
   useEffect(() => {
-    let ignore = false
+    const controller = new AbortController()
 
     const loadUsers = async () => {
       setIsLoading(true)
+      setLoadError('')
       try {
-        const response = await fetch('/dynasty-users.json')
-        if (!response.ok) {
-          throw new Error(`Failed to load dynasty data: ${response.status}`)
-        }
-        const data = (await response.json()) as UsersPayload
-        if (!ignore) {
-          setUsersById(data.users ?? {})
-          setLoadError('')
+        const members = await fetchMembers(controller.signal)
+        const { users, warnings } = membersToTreeData(members)
+        setUsersById(users)
+        if (import.meta.env.DEV && warnings.length > 0) {
+          console.warn('Family tree data warnings:', warnings)
         }
       } catch (error) {
-        if (!ignore) {
-          setLoadError(error instanceof Error ? error.message : 'Unable to load the dynasty assignments.')
-        }
+        if (controller.signal.aborted) return
+        setUsersById({})
+        setLoadError(error instanceof Error ? error.message : 'Unable to load the family tree data.')
       } finally {
-        if (!ignore) {
+        if (!controller.signal.aborted) {
           setIsLoading(false)
         }
       }
@@ -556,10 +543,8 @@ function App() {
 
     loadUsers()
 
-    return () => {
-      ignore = true
-    }
-  }, [])
+    return () => controller.abort()
+  }, [loadAttempt])
 
   const activeTheme = DYNASTY_STYLE[activeDynasty]
   const activeDynastyIndex = Math.max(0, DYNASTIES.indexOf(activeDynasty))
@@ -574,7 +559,7 @@ function App() {
         .map(([id, user]) => ({
           id,
           dynasty: user.dynasty,
-          emailPrefix: user.email.split('@')[0],
+          emailPrefix: user.name,
         }))
         .sort((a, b) => a.emailPrefix.localeCompare(b.emailPrefix)),
     [usersById],
@@ -652,10 +637,6 @@ function App() {
       <header className="app-topbar">
         <div className="topbar-title-row">
           <h1 ref={topHeadingRef}>Northwestern CSA Family Trees</h1>
-          <div>
-            {isLoading ? <p className="support-copy">Loading family tree data...</p> : null}
-            {!isLoading && loadError ? <p className="error-text">{loadError}</p> : null}
-          </div>
         </div>
 
         <div className="topbar-nav-row">
@@ -716,13 +697,33 @@ function App() {
       </header>
 
       <div ref={treeRef}>
-        <FamilyTreeCanvas
-          dynasty={activeDynasty}
-          users={usersById}
-          highlightUserId=""
-          searchedUserId={searchedUserId}
-          jumpRequest={jumpRequest}
-        />
+        {isLoading ? (
+          <section className="tree-status" aria-live="polite">
+            <h2>Loading family trees...</h2>
+          </section>
+        ) : loadError ? (
+          <section className="tree-status" role="alert">
+            <h2>We couldn't load the family trees.</h2>
+            <p>{loadError}</p>
+            <button type="button" onClick={() => setLoadAttempt((attempt) => attempt + 1)}>Try again</button>
+          </section>
+        ) : Object.keys(usersById).length === 0 ? (
+          <section className="tree-status">
+            <h2>No family tree members are available yet.</h2>
+          </section>
+        ) : getDynastyMembers(usersById, activeDynasty).length === 0 ? (
+          <section className="tree-status">
+            <h2>No {activeTheme.label} Dynasty members are available yet.</h2>
+          </section>
+        ) : (
+          <FamilyTreeCanvas
+            dynasty={activeDynasty}
+            users={usersById}
+            highlightUserId=""
+            searchedUserId={searchedUserId}
+            jumpRequest={jumpRequest}
+          />
+        )}
       </div>
 
       <button
