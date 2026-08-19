@@ -37,23 +37,23 @@ const DYNASTY_LOGO_SVG: Record<Dynasty, string> = {
 
 const MOCK_DYNASTY_HEADS: Record<Dynasty, Array<{ name: string; bio: string; image: string }>> = {
   fire: [
-    { name: 'Chelsea Liu', bio: 'Hi! I’m Chelsea and I’m a junior studying data science and I’m from Seattle, WA! I love watching baseball and trying to discover the few good matcha places chicago has.', image: new URL('./assets/heads-profiles/chelsea.jpg', import.meta.url).href },
-    { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a freshman studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: new URL('./assets/heads-profiles/justin.jpg', import.meta.url).href },
-    { name: 'Ashlyn Zhao', bio: 'Hi guys! I’m Ashlyn and I’m a first year studying Data Science and Economics from San Diego, California. I lovelovelove cafe hopping in Evanston/Chicago and baking sweet treats!!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
+    { name: 'Chelsea Liu', bio: 'Hi! I’m Chelsea and I’m a senior studying data science and I’m from Seattle, WA! I love watching baseball and trying to discover the few good matcha places chicago has.', image: new URL('./assets/heads-profiles/chelsea.jpg', import.meta.url).href },
+    { name: 'Justin Tang', bio: 'Hi everyone! I’m Justin a sophomore studying chemical engineering from Arcadia, California. You can either find me running around the streets of Evanston or dancing in the studio.', image: new URL('./assets/heads-profiles/justin.jpg', import.meta.url).href },
+    { name: 'Ashlyn Zhao', bio: 'Hi guys! I’m Ashlyn and I’m a second year studying Data Science and Economics from San Diego, California. I lovelovelove cafe hopping in Evanston/Chicago and baking sweet treats!!', image: new URL('./assets/heads-profiles/ashlyn.jpg', import.meta.url).href }
   ],
   water: [
-    { name: 'Grace He', bio: 'Hi hi I’m Grace He. I’m currently a junior studying CS + Econ (very unique, I know) and I like to rock climb and paint!! Chicago, IL is my hometown :p', image: new URL('./assets/heads-profiles/grace.jpg', import.meta.url).href },
-    { name: 'Jasmine Guo', bio: 'HI EVERYONE IM JASMINE AND IM A JUNIOR FROM NEW YORK STUDYING BIOLOGY. I LIKE TO DANCE AND EAT AND WANT A PET SNAKE!', image: new URL('./assets/heads-profiles/jasmine.jpg', import.meta.url).href },
+    { name: 'Grace He', bio: 'Hi hi I’m Grace He. I’m currently a senior studying CS + Econ (very unique, I know) and I like to rock climb and paint!! Chicago, IL is my hometown :p', image: new URL('./assets/heads-profiles/grace.jpg', import.meta.url).href },
+    { name: 'Jasmine Guo', bio: 'HI EVERYONE IM JASMINE AND IM A SENIOR FROM NEW YORK STUDYING BIOLOGY. I LIKE TO DANCE AND EAT AND WANT A PET SNAKE!', image: new URL('./assets/heads-profiles/jasmine.jpg', import.meta.url).href },
   ],
   earth: [
-    { name: 'Eric Dare', bio: 'Hi everyone! My name is Eric Dare and I am a 3rd year at Northwestern from Glen Ellyn, IL. I’m currently studying Biological Sciences and I want to pursue medicine. In my free time I practice Taekwondo and I eat a bunchhh of food.', image: new URL('./assets/heads-profiles/eric.jpg', import.meta.url).href },
-    { name: 'Sabrina Xu', bio: 'Hiii I’m Sabrina, a freshman from the best borough of all: Queens, NY, and I’m studying Biology and Global Health. Turtles are the best animals in the world 🐢🐢', image: new URL('./assets/heads-profiles/sabrina.jpg', import.meta.url).href },
-    { name: 'Mirabelle Jiang', bio: 'Hi I’m Mirabelle! Im a freshman from the land of abgs aka irvine, ca studying Econ & English. I like to eat sleep drive cars and scroll reels.', image: new URL('./assets/heads-profiles/mirabelle.jpg', import.meta.url).href },
+    { name: 'Eric Dare', bio: 'Hi everyone! My name is Eric Dare and I am a senior at Northwestern from Glen Ellyn, IL. I’m currently studying Biological Sciences and I want to pursue medicine. In my free time I practice Taekwondo and I eat a bunchhh of food.', image: new URL('./assets/heads-profiles/eric.jpg', import.meta.url).href },
+    { name: 'Sabrina Xu', bio: 'Hiii I’m Sabrina, a sophomore from the best borough of all: Queens, NY, and I’m studying Biology and Global Health. Turtles are the best animals in the world 🐢🐢', image: new URL('./assets/heads-profiles/sabrina.jpg', import.meta.url).href },
+    { name: 'Mirabelle Jiang', bio: 'Hi I’m Mirabelle! Im a sophomore from the land of abgs aka irvine, ca studying Econ & English. I like to eat sleep drive cars and scroll reels.', image: new URL('./assets/heads-profiles/mirabelle.jpg', import.meta.url).href },
   ],
   wind: [
-    { name: 'George Sun', bio: 'Hi guys I’m george! I’m a sophomore from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
-    { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a freshman electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: new URL('./assets/heads-profiles/charlie.jpg', import.meta.url).href },
-    { name: 'Daniel Wu', bio: 'Hi I’m Daniel, Im a freshman from Beijing and Vancouver and I study mmss psych maybe history. I like soccer, skiing, eating food, and labradors.', image: new URL('./assets/heads-profiles/daniel.jpg', import.meta.url).href },
+    { name: 'George Sun', bio: 'Hi guys I’m george! I’m a junior from vancouver studying journalism and data science. I like to play basketball, scroll tiktok then instagram and i also love drake.', image: new URL('./assets/heads-profiles/george.jpg', import.meta.url).href },
+    { name: 'Charlie Zhang', bio: 'Hello my name is Charlie I’m from ATL and I’m a sophomore electrical engineer at Northwestern University in my free time i enjoy eating. Sometimes I kayak and play the clarinet', image: new URL('./assets/heads-profiles/charlie.jpg', import.meta.url).href },
+    { name: 'Daniel Wu', bio: 'Hi I’m Daniel, Im a sophomore from Beijing and Vancouver and I study mmss psych maybe history. I like soccer, skiing, eating food, and labradors.', image: new URL('./assets/heads-profiles/daniel.jpg', import.meta.url).href },
   ],
 }
 
